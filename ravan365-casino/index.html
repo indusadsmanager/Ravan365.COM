@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ravan365 - Premium Casino</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: radial-gradient(circle at 50% 50%, #0b1025 0%, #05070f 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background Effects */
+        .bg-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00d9ff;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .login-container {
+            display: flex;
+            gap: 60px;
+            align-items: center;
+            z-index: 1;
+            padding: 20px;
+            max-width: 1200px;
+        }
+
+        /* Brand Section */
+        .brand-section {
+            text-align: center;
+            animation: fadeIn 1s ease;
+        }
+
+        .brand-logo {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            background: linear-gradient(160deg, #0d1333, #090d1f);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 40px rgba(0, 217, 255, 0.3);
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        .brand-logo img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .brand-name {
+            font-size: 56px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #00d9ff, #ff2b5c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .brand-tagline {
+            font-size: 18px;
+            color: #94a3b8;
+            margin-bottom: 30px;
+        }
+
+        .features {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(13, 19, 51, 0.5);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            border-color: #00d9ff;
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            color: #00d9ff;
+            margin-bottom: 10px;
+        }
+
+        .feature-text {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        /* Login Box */
+        .login-box {
+            width: 450px;
+            padding: 40px;
+            border-radius: 20px;
+            background: linear-gradient(160deg, rgba(13, 19, 51, 0.95), rgba(9, 13, 31, 0.95));
+            box-shadow: 0 0 60px rgba(0, 217, 255, 0.3);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            animation: fadeIn 1.2s ease;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .login-header p {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: transparent;
+            color: #94a3b8;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab-btn.active {
+            border-color: #00d9ff;
+            background: rgba(0, 217, 255, 0.1);
+            color: #00d9ff;
+        }
+
+        .tab-btn:hover:not(.active) {
+            border-color: rgba(0, 217, 255, 0.5);
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .input-group .input-wrapper {
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #00d9ff;
+        }
+
+        .input-group input {
+            padding-left: 45px;
+        }
+
+        .login-button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #00d9ff, #ff2b5c);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.4);
+        }
+
+        .login-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .login-button:hover::before {
+            left: 100%;
+        }
+
+        .error-message {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            color: #ef4444;
+            font-size: 13px;
+            display: none;
+            animation: shake 0.5s ease;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            font-size: 13px;
+        }
+
+        .remember-forgot label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #94a3b8;
+            cursor: pointer;
+        }
+
+        .remember-forgot input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .remember-forgot a {
+            color: #00d9ff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .remember-forgot a:hover {
+            color: #ff2b5c;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .divider span {
+            padding: 0 15px;
+        }
+
+        /* WhatsApp Button */
+        .whatsapp-new-id {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #25D366;
+            color: #fff;
+            padding: 15px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .whatsapp-new-id:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+        }
+
+        .whatsapp-new-id svg {
+            width: 24px;
+            height: 24px;
+            fill: #fff;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .login-container {
+                flex-direction: column;
+                gap: 40px;
+            }
+
+            .brand-section {
+                text-align: center;
+            }
+
+            .features {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-box {
+                width: 100%;
+                padding: 30px 20px;
+            }
+
+            .brand-name {
+                font-size: 40px;
+            }
+
+            .brand-logo {
+                width: 120px;
+                height: 120px;
+            }
+
+            .brand-logo img {
+                width: 80px;
+                height: 80px;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <!-- Background Particles -->
+    <div class="bg-particles" id="particles"></div>
+
+    <div class="login-container">
+        <!-- Brand Section -->
+        <div class="brand-section">
+            <div class="brand-logo">
+                <img src="https://uploads.onecompiler.io/447v8k97f/44a8v4r6k/31lUzDGZTUL._AC_UF894,1000_QL80_.jpg" alt="Ravan365 Logo">
+            </div>
+            <h1 class="brand-name">Ravan365</h1>
+            <p class="brand-tagline">Premium Casino & Gaming Platform</p>
+
+            <div class="features">
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="feature-text">Secure<br>Platform</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                    <div class="feature-text">Instant<br>Withdrawals</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-headset"></i></div>
+                    <div class="feature-text">24/7<br>Support</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Box -->
+        <div class="login-box">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('login')">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <button class="tab-btn" onclick="switchTab('register')">
+                    <i class="fas fa-user-plus"></i> Register
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginSection" class="form-section active">
+                <div class="login-header">
+                    <h2>Welcome Back</h2>
+                    <p>Login to your account</p>
+                </div>
+
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="input-group">
+                        <label for="loginUsername">Username</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="loginUsername" placeholder="Enter your username" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="loginPassword">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                        </div>
+                    </div>
+
+                    <div class="remember-forgot">
+                        <label>
+                            <input type="checkbox" id="rememberMe">
+                            Remember me
+                        </label>
+                        <a href="#" onclick="showForgotPassword()">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" class="login-button">
+                        <span>Login</span>
+                        <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+                    </button>
+                </form>
+
+                <div class="error-message" id="loginError">
+                    <i class="fas fa-exclamation-circle"></i> Invalid credentials. Please try again.
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerSection" class="form-section">
+                <div class="login-header">
+                    <h2>Create Account</h2>
+                    <p>Register to start playing</p>
+                </div>
+
+                <form id="registerForm" onsubmit="handleRegister(event)">
+                    <div class="input-group">
+                        <label for="registerUsername">Username *</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="registerUsername" placeholder="Choose a username" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="registerEmail">Email *</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="registerEmail" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="registerPhone">WhatsApp Number *</label>
+                        <div class="input-wrapper">
+                            <i class="fab fa-whatsapp"></i>
+                            <input type="tel" id="registerPhone" placeholder="Enter WhatsApp number" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="registerPassword">Password *</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="registerPassword" placeholder="Create a password" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="registerConfirmPassword">Confirm Password *</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="registerConfirmPassword" placeholder="Confirm your password" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="login-button">
+                        <span>Register</span>
+                        <i class="fas fa-user-plus" style="margin-left: 8px;"></i>
+                    </button>
+                </form>
+
+                <div class="error-message" id="registerError"></div>
+            </div>
+
+            <div class="divider">
+                <span>Or get instant access</span>
+            </div>
+
+            <button class="whatsapp-new-id" onclick="getNewIdViaWhatsApp()">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+                GET NEW ID
+            </button>
+
+            <p style="text-align: center; margin-top: 20px; color: #94a3b8; font-size: 12px;">
+                Contact us on WhatsApp to get your new gaming ID instantly!
+            </p>
+        </div>
+    </div>
+
+    <script src="js/login.js"></script>
+</body>
+</html>

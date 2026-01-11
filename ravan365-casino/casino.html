@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ravan365 - Premium Casino</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #05070f;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Check User Session */
+        .session-check {
+            display: none;
+        }
+
+        /* Header */
+        .main-header {
+            background: linear-gradient(180deg, rgba(13, 19, 51, 0.98), rgba(9, 13, 31, 0.98));
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #24306a;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+        }
+
+        .logo-text h1 {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #00d9ff, #ff2b5c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .balance-display {
+            background: rgba(0, 217, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 1px solid #24306a;
+            font-weight: 600;
+        }
+
+        .balance-display span {
+            color: #00d9ff;
+            font-size: 18px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            background: rgba(0, 217, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid #24306a;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-menu:hover {
+            border-color: #00d9ff;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, #0b1025 0%, #05070f 100%);
+            padding: 60px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #00d9ff, #ff2b5c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: #94a3b8;
+            margin-bottom: 30px;
+        }
+
+        .stats-banner {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #00d9ff;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        /* Games Section */
+        .games-section {
+            padding: 60px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-title h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .category-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .category-tab {
+            padding: 12px 30px;
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid #24306a;
+            border-radius: 10px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .category-tab:hover,
+        .category-tab.active {
+            background: linear-gradient(90deg, #00d9ff, #ff2b5c);
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Payment Methods */
+        .payment-methods {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .payment-method-card {
+            background: rgba(0, 217, 255, 0.05);
+            border: 2px solid #24306a;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method-card:hover,
+        .payment-method-card.selected {
+            border-color: #00d9ff;
+            background: rgba(0, 217, 255, 0.1);
+        }
+
+        .payment-method-card.selected {
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+        }
+
+        .payment-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .payment-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            background: rgba(0, 217, 255, 0.1);
+            color: #00d9ff;
+        }
+
+        .payment-info h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .payment-info p {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        /* QR Display */
+        .qr-display {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .qr-code {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .qr-code img {
+            width: 200px;
+            height: 200px;
+            border-radius: 4px;
+        }
+
+        .copy-address {
+            background: rgba(0, 217, 255, 0.1);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 13px;
+            word-break: break-all;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .copy-address:hover {
+            background: rgba(0, 217, 255, 0.2);
+        }
+
+        .copy-address i {
+            margin-left: 10px;
+            color: #00d9ff;
+        }
+
+        /* Transaction History */
+        .transactions-list {
+            margin-top: 30px;
+        }
+
+        .transaction-item {
+            background: rgba(0, 217, 255, 0.05);
+            border: 1px solid #24306a;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .transaction-info h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .transaction-info p {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .transaction-amount {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .transaction-amount.deposit {
+            color: #10b981;
+        }
+
+        .transaction-amount.withdrawal {
+            color: #ef4444;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .header-actions {
+                gap: 10px;
+            }
+
+            .balance-display {
+                display: none;
+            }
+
+            .hero-title {
+                font-size: 36px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-buttons {
+                flex-direction: column;
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-banner {
+                gap: 30px;
+            }
+
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <script>
+        if (sessionStorage.getItem('user') !== 'true') {
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <header class="main-header">
+        <div class="header-container">
+            <a href="#" class="logo">
+                <img src="https://uploads.onecompiler.io/447v8k97f/44a8v4r6k/31lUzDGZTUL._AC_UF894,1000_QL80_.jpg" alt="Ravan365">
+                <div class="logo-text">
+                    <h1>Ravan365</h1>
+                </div>
+            </a>
+
+            <div class="header-actions">
+                <div class="balance-display">
+                    Balance: <span id="userBalance">₹0</span>
+                </div>
+                <div class="header-buttons">
+                    <button class="btn btn-primary" onclick="openModal('deposit')">
+                        <i class="fas fa-plus"></i> Deposit
+                    </button>
+                    <button class="btn btn-secondary" onclick="openModal('withdraw')">
+                        <i class="fas fa-minus"></i> Withdraw
+                    </button>
+                </div>
+                <div class="user-menu" onclick="openModal('profile')">
+                    <i class="fas fa-user-circle" style="font-size: 32px; color: #00d9ff;"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero-section">
+        <div class="hero-container">
+            <h1 class="hero-title">Welcome to Ravan365</h1>
+            <p class="hero-subtitle">Premium Casino & Gaming Platform - Play, Win, Withdraw Instantly!</p>
+            
+            <div class="stats-banner">
+                <div class="stat-item">
+                    <div class="stat-value">500+</div>
+                    <div class="stat-label">Games Available</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">24/7</div>
+                    <div class="stat-label">Live Support</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">INSTANT</div>
+                    <div class="stat-label">Withdrawals</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Secure</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="games-section" id="games">
+        <div class="section-title">
+            <h2>Our Games</h2>
+            <p>Choose from our extensive collection of premium casino games</p>
+        </div>
+
+        <div class="category-tabs">
+            <button class="category-tab active" onclick="filterGames('all')">All Games</button>
+            <button class="category-tab" onclick="filterGames('slots')">Slots</button>
+            <button class="category-tab" onclick="filterGames('table')">Table Games</button>
+            <button class="category-tab" onclick="filterGames('live')">Live Casino</button>
+            <button class="category-tab" onclick="filterGames('sports')">Sports Betting</button>
+        </div>
+
+        <div class="games-grid" id="gamesGrid">
+        </div>
+    </section>
+
+    <div id="depositModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle" style="color: #10b981;"></i> Deposit Funds</h2>
+                <button class="close-modal" onclick="closeModal('deposit')">&times;</button>
+            </div>
+
+            <div class="form-group">
+                <label>Available Balance: <span style="color: #00d9ff; font-size: 18px; font-weight: 700;" id="depositBalance">₹0</span></label>
+            </div>
+
+            <div class="form-group">
+                <label>Select Payment Method</label>
+                <div class="payment-methods" id="depositPaymentMethods">
+                </div>
+            </div>
+
+            <div id="upiPaymentDetails" style="display: none;">
+                <div class="qr-display">
+                    <h3 style="margin-bottom: 20px;">Scan QR Code to Pay</h3>
+                    <div class="qr-code" id="upiQrCode">
+                        <img src="" alt="UPI QR Code" id="upiQrImage">
+                    </div>
+                    <p style="margin-bottom: 15px;">UPI ID: <strong id="upiIdDisplay"></strong></p>
+                    <div class="copy-address" onclick="copyToClipboard('upiIdDisplay')">
+                        <span id="upiIdDisplay"></span> <i class="fas fa-copy"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Amount (₹) *</label>
+                    <input type="number" id="upiDepositAmount" placeholder="Enter deposit amount" min="100" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Transaction ID / UTR Number *</label>
+                    <input type="text" id="upiTransactionId" placeholder="Enter transaction ID" required>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%;" onclick="submitDeposit('upi')">
+                    <i class="fas fa-paper-plane"></i> Submit Deposit
+                </button>
+            </div>
+
+            <div id="bankPaymentDetails" style="display: none;">
+                <div class="card">
+                    <h3 style="margin-bottom: 20px; text-align: center;">Bank Transfer Details</h3>
+                    <div style="background: rgba(0, 217, 255, 0.1); padding: 20px; border-radius: 10px;">
+                        <p><strong>Account Holder:</strong> <span id="bankHolderNameDisplay"></span></p>
+                        <p><strong>Account Number:</strong> <span id="bankAccountNumberDisplay"></span></p>
+                        <p><strong>IFSC Code:</strong> <span id="bankIfscDisplay"></span></p>
+                        <p><strong>Bank Name:</strong> <span id="bankNameDisplay"></span></p>
+                    </div>
+                    <div class="copy-address" onclick="copyBankDetails()" style="margin-top: 15px;">
+                        <i class="fas fa-copy"></i> Copy Bank Details
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>Amount (₹) *</label>
+                    <input type="number" id="bankDepositAmount" placeholder="Enter deposit amount" min="100" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Transaction ID / Reference Number *</label>
+                    <input type="text" id="bankTransactionId" placeholder="Enter transaction ID" required>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%;" onclick="submitDeposit('bank')">
+                    <i class="fas fa-paper-plane"></i> Submit Deposit
+                </button>
+            </div>
+
+            <div id="usdtPaymentDetails" style="display: none;">
+                <div class="qr-display">
+                    <h3 style="margin-bottom: 20px;">USDT (TRC20) Payment</h3>
+                    <div class="qr-code" id="usdtQrCode">
+                        <img src="" alt="USDT QR Code" id="usdtQrImage">
+                    </div>
+                    <p style="margin-bottom: 15px;">Wallet Address:</p>
+                    <div class="copy-address" onclick="copyToClipboard('usdtWalletAddressDisplay')">
+                        <span id="usdtWalletAddressDisplay"></span> <i class="fas fa-copy"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Amount in USDT *</label>
+                    <input type="number" id="usdtDepositAmount" placeholder="Enter USDT amount" step="0.00000001" min="0.00000001" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Transaction Hash *</label>
+                    <input type="text" id="usdtTransactionHash" placeholder="Enter transaction hash" required>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%;" onclick="submitDeposit('usdt')">
+                    <i class="fas fa-paper-plane"></i> Submit Deposit
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="withdrawModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2><i class="fas fa-minus-circle" style="color: #ef4444;"></i> Withdraw Funds</h2>
+                <button class="close-modal" onclick="closeModal('withdraw')">&times;</button>
+            </div>
+
+            <div class="form-group">
+                <label>Available Balance: <span style="color: #00d9ff; font-size: 18px; font-weight: 700;" id="withdrawBalance">₹0</span></label>
+            </div>
+
+            <div class="form-group">
+                <label>Select Withdrawal Method</label>
+                <div class="payment-methods" id="withdrawPaymentMethods">
+                </div>
+            </div>
+
+            <div id="bankWithdrawDetails" style="display: none;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Account Holder Name *</label>
+                        <input type="text" id="withdrawHolderName" placeholder="Account holder name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Account Number *</label>
+                        <input type="text" id="withdrawAccountNumber" placeholder="Account number" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>IFSC Code *</label>
+                        <input type="text" id="withdrawIfsc" placeholder="IFSC code" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Bank Name *</label>
+                        <input type="text" id="withdrawBankName" placeholder="Bank name" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Amount (₹) *</label>
+                    <input type="number" id="withdrawAmount" placeholder="Enter withdrawal amount" min="100" required>
+                </div>
+
+                <button class="btn btn-danger" style="width: 100%;" onclick="submitWithdrawal('bank')">
+                    <i class="fas fa-paper-plane"></i> Submit Withdrawal
+                </button>
+            </div>
+
+            <div id="usdtWithdrawDetails" style="display: none;">
+                <div class="form-group">
+                    <label>USDT Wallet Address (TRC20) *</label>
+                    <input type="text" id="withdrawUsdtAddress" placeholder="Enter USDT wallet address" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Amount in USDT *</label>
+                    <input type="number" id="withdrawUsdtAmount" placeholder="Enter USDT amount" step="0.00000001" min="0.00000001" required>
+                </div>
+
+                <button class="btn btn-danger" style="width: 100%;" onclick="submitWithdrawal('usdt')">
+                    <i class="fas fa-paper-plane"></i> Submit Withdrawal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="profileModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-circle" style="color: #00d9ff;"></i> My Profile</h2>
+                <button class="close-modal" onclick="closeModal('profile')">&times;</button>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 30px;">
+                <i class="fas fa-user-circle" style="font-size: 80px; color: #00d9ff; margin-bottom: 15px;"></i>
+                <h3 id="profileUsername" style="margin-bottom: 5px;">Username</h3>
+                <p id="profileEmail" style="color: #94a3b8; font-size: 14px;">email@example.com</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div class="card" style="text-align: center;">
+                    <h3 style="font-size: 14px; color: #94a3b8; margin-bottom: 10px;">Balance</h3>
+                    <p style="font-size: 24px; font-weight: 700; color: #00d9ff;" id="profileBalance">₹0</p>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <h3 style="font-size: 14px; color: #94a3b8; margin-bottom: 10px;">Status</h3>
+                    <p style="font-size: 18px; font-weight: 700; color: #10b981;" id="profileStatus">Active</p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-primary" onclick="closeModal('profile'); openModal('deposit');">
+                    <i class="fas fa-plus"></i> Deposit
+                </button>
+                <button class="btn btn-secondary" onclick="closeModal('profile'); openModal('withdraw');">
+                    <i class="fas fa-minus"></i> Withdraw
+                </button>
+                <button class="btn btn-warning" onclick="loadTransactionHistory()">
+                    <i class="fas fa-history"></i> Transaction History
+                </button>
+                <button class="btn btn-danger" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+
+            <div id="transactionHistory" style="margin-top: 30px; display: none;">
+                <h3 style="margin-bottom: 20px; font-size: 18px;">Transaction History</h3>
+                <div id="transactionsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="whatsapp-float" onclick="openWhatsApp()">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+    </div>
+
+    <script src="js/casino.js"></script>
+</body>
+</html>
