@@ -52,17 +52,18 @@ Players can register on the login page or use "GET NEW ID" button to contact you
 
 ### File Structure
 ```
-/
-├── index.html              # Login page with registration
-├── admin-panel.html        # Admin dashboard (ONLY YOU)
-├── casino.html             # Main casino website
+ravan365-casino/
+├── index.html
+├── admin-panel.html
+├── casino.html
+├── README.md
+├── todo.md
 ├── css/
-│   └── style.css          # Global styles
+│   └── style.css
 ├── js/
-│   ├── login.js           # Login & registration logic
-│   ├── admin-panel.js     # Admin panel functionality
-│   └── casino.js          # Casino website functionality
-└── README.md              # This file
+│   ├── login.js
+│   ├── admin-panel.js
+│   └── casino.js
 ```
 
 ## 📋 How to Use
