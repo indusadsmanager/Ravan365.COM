@@ -316,7 +316,7 @@ function submitDeposit(method) {
         }
     } else if (method === 'usdt') {
         amount = parseFloat(document.getElementById('usdtDepositAmount').value);
-        transactionId = document.getElementById('usdtTransactionHash').value;
+        transactionId = document.getElementById('usdtDepositHash').value || document.getElementById('usdtTransactionHash')?.value;
         paymentDetails = {
             walletAddress: paymentSettings.usdt.walletAddress
         };
