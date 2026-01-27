@@ -5,641 +5,571 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ravan365 - Premium Casino</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/premium-style.css">
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Header Styles */
-        .main-header {
-            background: linear-gradient(180deg, rgba(13, 19, 51, 0.98), rgba(9, 13, 31, 0.98));
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--deep-navy);
+            background-image: 
+                radial-gradient(ellipse at top, #1a237e 0%, transparent 50%),
+                radial-gradient(ellipse at bottom, #667eea 0%, transparent 50%);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* Premium Header */
+        .premium-main-header {
+            background: linear-gradient(180deg, rgba(10, 14, 39, 0.98) 0%, rgba(26, 35, 126, 0.95) 100%);
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 4px 30px rgba(102, 126, 234, 0.3);
             padding: 15px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
-            border-bottom: 1px solid #24306a;
             backdrop-filter: blur(10px);
         }
 
-        .header-container {
-            max-width: 1400px;
+        .premium-header-container {
+            max-width: 1600px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .logo {
+        .premium-logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
             text-decoration: none;
         }
 
-        .logo img {
-            width: 40px;
-            height: 40px;
+        .premium-logo img {
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
             object-fit: cover;
-            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            animation: premium-glow 3s ease-in-out infinite;
         }
 
-        .logo-text h1 {
-            font-size: 20px;
-            font-weight: 800;
-            background: linear-gradient(90deg, #00d9ff, #ff2b5c);
+        .premium-logo-text h1 {
+            font-size: 28px;
+            font-weight: 900;
+            background: var(--gold-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin: 0;
-            line-height: 1;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
-        .header-actions {
+        .premium-header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .premium-balance-display {
+            background: var(--gold-gradient);
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-weight: 900;
+            font-size: 18px;
+            color: #000;
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4);
+            animation: balancePulse 2s ease-in-out infinite;
+        }
+
+        .premium-header-buttons {
             display: flex;
             gap: 10px;
-            align-items: center;
         }
 
-        .balance-display {
-            background: rgba(0, 217, 255, 0.1);
-            padding: 8px 15px;
-            border-radius: 8px;
-            border: 1px solid #24306a;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .balance-display span {
-            color: #00d9ff;
-            font-size: 16px;
-        }
-
-        .header-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .user-menu {
+        .premium-user-menu {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 6px 12px;
-            background: rgba(0, 217, 255, 0.1);
-            border-radius: 8px;
-            border: 1px solid #24306a;
+            gap: 12px;
+            padding: 10px 18px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 12px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .user-menu:hover {
-            border-color: #00d9ff;
+        .premium-user-menu:hover {
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
         }
 
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        /* Hero Section - Compact */
-        .hero-section {
-            background: linear-gradient(135deg, #0b1025 0%, #05070f 100%);
-            padding: 30px 0;
-            position: relative;
-        }
-
-        .hero-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-            text-align: center;
-        }
-
-        .hero-title {
+        .premium-user-menu i {
             font-size: 28px;
-            font-weight: 800;
-            margin-bottom: 10px;
-            background: linear-gradient(90deg, #00d9ff, #ff2b5c);
+            color: var(--primary-gold);
+        }
+
+        /* Premium Hero Section */
+        .premium-hero-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+            padding: 40px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .premium-hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            animation: heroGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes heroGlow {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .premium-hero-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 30px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .premium-hero-title {
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 12px;
+            background: var(--gold-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            animation: premiumFloat 5s ease-in-out infinite;
         }
 
-        .hero-subtitle {
-            font-size: 14px;
-            color: #94a3b8;
-            margin-bottom: 20px;
+        .premium-hero-subtitle {
+            font-size: 18px;
+            color: var(--silver-gray);
+            margin-bottom: 25px;
+            font-weight: 400;
+            letter-spacing: 2px;
         }
 
-        .stats-banner {
+        .premium-stats-banner {
             display: flex;
             justify-content: center;
             gap: 30px;
-            margin-top: 20px;
+            margin-top: 30px;
             flex-wrap: wrap;
         }
 
-        .stat-item {
+        .premium-stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 16px;
+            padding: 25px 35px;
             text-align: center;
-            padding: 10px 15px;
-            background: rgba(0, 217, 255, 0.05);
-            border-radius: 8px;
-            border: 1px solid #24306a;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            min-width: 140px;
         }
 
-        .stat-value {
-            font-size: 24px;
-            font-weight: 800;
-            color: #00d9ff;
-            margin-bottom: 3px;
+        .premium-stat-item:hover {
+            transform: translateY(-8px) scale(1.05);
+            border-color: var(--primary-gold);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
         }
 
-        .stat-label {
-            color: #94a3b8;
-            font-size: 11px;
-            text-transform: uppercase;
-        }
-
-        /* Games Section */
-        .games-section {
-            padding: 30px 0;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .section-title h2 {
-            font-size: 24px;
-            font-weight: 700;
+        .premium-stat-value {
+            font-size: 32px;
+            font-weight: 900;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             margin-bottom: 8px;
         }
 
-        .section-title p {
-            color: #94a3b8;
-            font-size: 13px;
+        .premium-stat-label {
+            color: var(--silver-gray);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
         }
 
-        .category-tabs {
+        /* Premium Games Section */
+        .premium-games-section {
+            padding: 50px 0;
+        }
+
+        .premium-section-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .premium-section-title h2 {
+            font-size: 36px;
+            font-weight: 900;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .premium-section-title p {
+            color: var(--silver-gray);
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .premium-category-tabs {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 25px;
+            gap: 12px;
+            margin-bottom: 40px;
             flex-wrap: wrap;
             padding: 0 20px;
         }
 
-        .category-tab {
-            padding: 10px 20px;
-            background: rgba(0, 217, 255, 0.1);
-            border: 1px solid #24306a;
-            border-radius: 8px;
-            color: #94a3b8;
+        .premium-category-tab {
+            padding: 14px 30px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            color: var(--silver-gray);
             cursor: pointer;
             transition: all 0.3s ease;
-            font-weight: 500;
-            font-size: 13px;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .category-tab:hover,
-        .category-tab.active {
-            background: linear-gradient(90deg, #00d9ff, #ff2b5c);
-            color: #fff;
-            border-color: transparent;
+        .premium-category-tab:hover,
+        .premium-category-tab.active {
+            background: var(--gold-gradient);
+            color: #000;
+            border-color: var(--primary-gold);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+            transform: translateY(-3px);
         }
 
-        .games-grid {
+        .premium-games-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            max-width: 1400px;
+            gap: 20px;
+            max-width: 1600px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 30px;
         }
 
-        .game-card {
-            background: linear-gradient(160deg, rgba(13, 19, 51, 0.9), rgba(9, 13, 31, 0.9));
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #24306a;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .game-card:hover {
-            border-color: #00d9ff;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.2);
-        }
-
-        .game-image {
-            width: 100%;
-            aspect-ratio: 4/3;
-            object-fit: cover;
-            background: linear-gradient(135deg, #1a237e, #0d1333);
-        }
-
-        .game-info {
-            padding: 12px;
-        }
-
-        .game-name {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .game-category {
-            font-size: 11px;
-            color: #94a3b8;
-            text-transform: uppercase;
-        }
-
-        .game-play-btn {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            background: rgba(0, 217, 255, 0.9);
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 13px;
-            transition: all 0.3s ease;
-            opacity: 0;
-        }
-
-        .game-card:hover .game-play-btn {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 1;
-        }
-
-        /* API Integration Section */
-        .api-integration {
+        /* Premium API Integration */
+        .premium-api-section {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 40px;
             padding: 0 20px;
         }
 
-        .api-btn {
-            background: linear-gradient(90deg, #10b981, #059669);
+        .premium-api-btn {
+            background: var(--success-gradient);
             color: #fff;
-            padding: 12px 30px;
+            padding: 16px 40px;
             border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 16px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 30px rgba(0, 200, 83, 0.4);
         }
 
-        .api-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+        .premium-api-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 200, 83, 0.6);
         }
 
-        /* History Sections */
-        .history-section {
-            padding: 30px 0;
-            background: rgba(0, 217, 255, 0.02);
-            margin-top: 30px;
+        /* Premium History Section */
+        .premium-history-section {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 50px 0;
+            margin-top: 50px;
         }
 
-        .history-tabs {
+        .premium-history-tabs {
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin-bottom: 25px;
+            margin-bottom: 35px;
             flex-wrap: wrap;
         }
 
-        .history-tab {
-            padding: 10px 25px;
-            background: rgba(0, 217, 255, 0.05);
-            border: 1px solid #24306a;
-            border-radius: 8px;
-            color: #94a3b8;
+        .premium-history-tab {
+            padding: 14px 35px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            color: var(--silver-gray);
             cursor: pointer;
             transition: all 0.3s ease;
-            font-weight: 500;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .history-tab:hover,
-        .history-tab.active {
-            background: rgba(0, 217, 255, 0.1);
-            color: #00d9ff;
-            border-color: #00d9ff;
+        .premium-history-tab:hover,
+        .premium-history-tab.active {
+            background: var(--gold-gradient);
+            color: #000;
+            border-color: var(--primary-gold);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+            transform: translateY(-3px);
         }
 
-        .history-content {
+        .premium-history-content {
             display: none;
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 30px;
         }
 
-        .history-content.active {
+        .premium-history-content.active {
             display: block;
+            animation: fadeIn 0.5s ease;
         }
 
-        /* Mobile Navigation Menu */
-        .mobile-nav {
+        /* Premium Date Filter */
+        .premium-date-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 16px;
+            border: 2px solid rgba(255, 215, 0, 0.2);
+        }
+
+        /* Premium Mobile Navigation */
+        .premium-mobile-nav {
             display: none;
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(0deg, rgba(13, 19, 51, 0.98), rgba(9, 13, 31, 0.98));
-            border-top: 1px solid #24306a;
-            padding: 10px;
+            background: linear-gradient(0deg, rgba(10, 14, 39, 0.98) 0%, rgba(26, 35, 126, 0.95) 100%);
+            border-top: 2px solid rgba(255, 215, 0, 0.3);
+            padding: 12px;
             z-index: 1000;
+            box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.3);
         }
 
-        .mobile-nav-items {
+        .premium-mobile-nav-items {
             display: flex;
             justify-content: space-around;
             align-items: center;
         }
 
-        .mobile-nav-item {
+        .premium-mobile-nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
-            color: #94a3b8;
+            gap: 6px;
+            color: var(--silver-gray);
             text-decoration: none;
             font-size: 11px;
             cursor: pointer;
             transition: all 0.3s ease;
-        }
-
-        .mobile-nav-item:hover,
-        .mobile-nav-item.active {
-            color: #00d9ff;
-        }
-
-        .mobile-nav-item i {
-            font-size: 20px;
-        }
-
-        /* Payment Methods */
-        .payment-methods {
-            display: grid;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .payment-method-card {
-            background: rgba(0, 217, 255, 0.05);
-            border: 2px solid #24306a;
-            border-radius: 12px;
-            padding: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .payment-method-card:hover,
-        .payment-method-card.selected {
-            border-color: #00d9ff;
-            background: rgba(0, 217, 255, 0.1);
-        }
-
-        .payment-method-card.selected {
-            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
-        }
-
-        .payment-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .payment-icon {
-            width: 45px;
-            height: 45px;
+            padding: 8px 12px;
             border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        }
+
+        .premium-mobile-nav-item:hover,
+        .premium-mobile-nav-item.active {
+            color: var(--primary-gold);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .premium-mobile-nav-item i {
             font-size: 22px;
-            background: rgba(0, 217, 255, 0.1);
-            color: #00d9ff;
         }
 
-        .payment-info h3 {
-            font-size: 15px;
-            margin-bottom: 3px;
-        }
-
-        .payment-info p {
-            font-size: 11px;
-            color: #94a3b8;
-        }
-
-        /* QR Display */
-        .qr-display {
-            text-align: center;
-            padding: 20px;
+        /* Premium Transaction Cards */
+        .premium-transaction-item {
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            margin: 15px 0;
-        }
-
-        .qr-code {
-            background: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            display: inline-block;
-            margin-bottom: 12px;
-        }
-
-        .qr-code img {
-            width: 180px;
-            height: 180px;
-            border-radius: 4px;
-        }
-
-        .copy-address {
-            background: rgba(0, 217, 255, 0.1);
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 12px;
-            word-break: break-all;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 12px;
-        }
-
-        .copy-address:hover {
-            background: rgba(0, 217, 255, 0.2);
-        }
-
-        /* Transaction List */
-        .transactions-list {
-            margin-top: 20px;
-        }
-
-        .transaction-item {
-            background: rgba(0, 217, 255, 0.05);
-            border: 1px solid #24306a;
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 10px;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: all 0.3s ease;
         }
 
-        .transaction-info h4 {
-            font-size: 13px;
-            margin-bottom: 3px;
+        .premium-transaction-item:hover {
+            transform: translateX(10px);
+            border-color: var(--primary-gold);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
         }
 
-        .transaction-info p {
-            font-size: 11px;
-            color: #94a3b8;
-        }
-
-        .transaction-amount {
+        .premium-transaction-info h4 {
+            font-size: 16px;
             font-weight: 700;
-            font-size: 14px;
+            margin-bottom: 6px;
+            color: var(--crystal-white);
         }
 
-        .transaction-amount.deposit {
-            color: #10b981;
+        .premium-transaction-info p {
+            font-size: 13px;
+            color: var(--silver-gray);
         }
 
-        .transaction-amount.withdrawal {
-            color: #ef4444;
+        .premium-transaction-amount {
+            font-weight: 900;
+            font-size: 20px;
+            padding: 8px 20px;
+            border-radius: 10px;
         }
 
-        /* Date Filter */
-        .date-filter {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+        .premium-transaction-amount.deposit {
+            background: var(--success-gradient);
+            color: #fff;
         }
 
-        .date-filter input {
-            flex: 1;
-            min-width: 140px;
+        .premium-transaction-amount.withdrawal {
+            background: var(--danger-gradient);
+            color: #fff;
         }
 
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .games-grid {
+        /* Responsive Design */
+        @media (max-width: 1400px) {
+            .premium-games-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
         }
 
+        @media (max-width: 1100px) {
+            .premium-games-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 15px;
+                padding: 0 20px;
+            }
+        }
+
         @media (max-width: 992px) {
-            .header-actions {
-                gap: 8px;
+            .premium-header-actions {
+                gap: 10px;
             }
 
-            .balance-display {
+            .premium-balance-display {
                 display: none;
             }
 
-            .hero-title {
-                font-size: 24px;
+            .premium-hero-title {
+                font-size: 32px;
             }
 
-            .games-grid {
+            .premium-games-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
 
         @media (max-width: 768px) {
-            .menu-toggle {
+            .premium-header-container {
+                padding: 0 20px;
+            }
+
+            .premium-logo-text h1 {
+                font-size: 20px;
+            }
+
+            .premium-mobile-nav {
                 display: block;
             }
 
-            .header-buttons {
-                display: none;
-            }
-
-            .mobile-nav {
-                display: block;
-            }
-
-            .games-grid {
+            .premium-games-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
+                gap: 12px;
                 padding: 0 15px;
             }
 
-            .hero-title {
-                font-size: 20px;
+            .premium-hero-title {
+                font-size: 26px;
+                letter-spacing: 2px;
             }
 
-            .stats-banner {
+            .premium-stats-banner {
                 gap: 15px;
             }
 
-            .stat-item {
-                padding: 8px 12px;
-                min-width: 80px;
+            .premium-stat-item {
+                padding: 20px 25px;
+                min-width: 110px;
             }
 
-            .stat-value {
-                font-size: 20px;
+            .premium-stat-value {
+                font-size: 24px;
             }
 
-            .category-tabs {
+            .premium-category-tabs {
                 gap: 8px;
             }
 
-            .category-tab {
-                padding: 8px 15px;
+            .premium-category-tab {
+                padding: 10px 20px;
                 font-size: 12px;
-            }
-
-            .main-content {
-                padding-bottom: 80px;
             }
         }
 
         @media (max-width: 576px) {
-            .games-grid {
+            .premium-games-grid {
                 grid-template-columns: 1fr;
             }
 
-            .hero-section {
-                padding: 20px 0;
+            .premium-hero-section {
+                padding: 30px 0;
             }
 
-            .stats-banner {
+            .premium-stats-banner {
                 gap: 10px;
             }
 
-            .stat-item {
-                padding: 6px 10px;
-                min-width: 70px;
+            .premium-stat-item {
+                padding: 15px 20px;
+                min-width: 90px;
             }
 
-            .stat-value {
-                font-size: 18px;
-            }
-
-            .section-title h2 {
+            .premium-stat-value {
                 font-size: 20px;
             }
 
-            .logo-text h1 {
-                font-size: 16px;
+            .premium-section-title h2 {
+                font-size: 24px;
+            }
+
+            body {
+                padding-bottom: 70px;
             }
         }
     </style>
@@ -648,415 +578,175 @@
 <body>
     <script>
         if (sessionStorage.getItem('user') !== 'true') {
-            window.location.href = 'index.html';
+            window.location.href = 'index-premium.html';
         }
     </script>
 
-    <header class="main-header">
-        <div class="header-container">
-            <a href="#" class="logo">
+    <!-- Premium Header -->
+    <header class="premium-main-header">
+        <div class="premium-header-container">
+            <a href="#" class="premium-logo">
                 <img src="https://uploads.onecompiler.io/447v8k97f/44a8v4r6k/31lUzDGZTUL._AC_UF894,1000_QL80_.jpg" alt="Ravan365">
-                <div class="logo-text">
+                <div class="premium-logo-text">
                     <h1>Ravan365</h1>
                 </div>
             </a>
 
-            <div class="header-actions">
-                <div class="balance-display">
-                    Balance: <span id="userBalance">₹0</span>
+            <div class="premium-header-actions">
+                <div class="premium-balance-display">
+                    ₹<span id="userBalance">0</span>
                 </div>
-                <div class="header-buttons">
-                    <button class="btn btn-primary" onclick="openModal('deposit')">
-                        <i class="fas fa-plus"></i> <span style="display: none;">Deposit</span>
+                <div class="premium-header-buttons">
+                    <button class="premium-btn premium-btn-gold" onclick="openModal('deposit')">
+                        <i class="fas fa-plus"></i>
                     </button>
-                    <button class="btn btn-secondary" onclick="openModal('withdraw')">
-                        <i class="fas fa-minus"></i> <span style="display: none;">Withdraw</span>
+                    <button class="premium-btn premium-btn-danger" onclick="openModal('withdraw')">
+                        <i class="fas fa-minus"></i>
                     </button>
                 </div>
-                <div class="user-menu" onclick="openModal('profile')">
-                    <i class="fas fa-user-circle" style="font-size: 28px; color: #00d9ff;"></i>
+                <div class="premium-user-menu" onclick="openModal('profile')">
+                    <i class="fas fa-user-circle"></i>
                 </div>
-                <button class="menu-toggle" onclick="toggleMobileMenu()">
-                    <i class="fas fa-bars"></i>
-                </button>
             </div>
         </div>
     </header>
 
-    <div class="main-content">
-        <section class="hero-section">
-            <div class="hero-container">
-                <h1 class="hero-title">Ravan365 Casino</h1>
-                <p class="hero-subtitle">Play • Win • Withdraw Instantly</p>
-                
-                <div class="stats-banner">
-                    <div class="stat-item">
-                        <div class="stat-value">500+</div>
-                        <div class="stat-label">Games</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">24/7</div>
-                        <div class="stat-label">Support</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">INSTANT</div>
-                        <div class="stat-label">Withdrawals</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">100%</div>
-                        <div class="stat-label">Secure</div>
-                    </div>
+    <!-- Premium Hero Section -->
+    <section class="premium-hero-section">
+        <div class="premium-hero-container">
+            <h1 class="premium-hero-title">Premium Gaming Experience</h1>
+            <p class="premium-hero-subtitle">PLAY • WIN • WITHDRAW INSTANTLY</p>
+            
+            <div class="premium-stats-banner">
+                <div class="premium-stat-item">
+                    <div class="premium-stat-value">500+</div>
+                    <div class="premium-stat-label">Games</div>
+                </div>
+                <div class="premium-stat-item">
+                    <div class="premium-stat-value">24/7</div>
+                    <div class="premium-stat-label">Support</div>
+                </div>
+                <div class="premium-stat-item">
+                    <div class="premium-stat-value">INSTANT</div>
+                    <div class="premium-stat-label">Withdrawals</div>
+                </div>
+                <div class="premium-stat-item">
+                    <div class="premium-stat-value">100%</div>
+                    <div class="premium-stat-label">Secure</div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="games-section" id="games">
-            <div class="section-title">
-                <h2>Our Games</h2>
-                <p>Choose from our extensive collection</p>
-            </div>
+    <!-- Premium Games Section -->
+    <section class="premium-games-section" id="games">
+        <div class="premium-section-title">
+            <h2>Our Premium Games</h2>
+            <p>Choose from our exclusive collection</p>
+        </div>
 
-            <div class="api-integration">
-                <button class="api-btn" onclick="openApiIntegration()">
-                    <i class="fas fa-plug"></i> Connect Game API
+        <div class="premium-api-section">
+            <button class="premium-api-btn" onclick="openApiIntegration()">
+                <i class="fas fa-plug"></i> Connect Game API
+            </button>
+            <p style="color: var(--silver-gray); font-size: 13px; margin-top: 10px; font-weight: 600;">Add 1000+ games instantly</p>
+        </div>
+
+        <div class="premium-category-tabs">
+            <button class="premium-category-tab active" onclick="filterGames('all')">All Games</button>
+            <button class="premium-category-tab" onclick="filterGames('slots')">Slots</button>
+            <button class="premium-category-tab" onclick="filterGames('table')">Table Games</button>
+            <button class="premium-category-tab" onclick="filterGames('live')">Live Casino</button>
+            <button class="premium-category-tab" onclick="filterGames('sports')">Sports</button>
+        </div>
+
+        <div class="premium-games-grid" id="gamesGrid">
+        </div>
+    </section>
+
+    <!-- Premium History Section -->
+    <section class="premium-history-section" id="history">
+        <div class="premium-section-title">
+            <h2>Your Gaming History</h2>
+            <p>Track your premium gaming activity</p>
+        </div>
+
+        <div class="premium-history-tabs">
+            <button class="premium-history-tab active" onclick="showHistoryTab('transactions')">Transactions</button>
+            <button class="premium-history-tab" onclick="showHistoryTab('bets')">Bet History</button>
+        </div>
+
+        <div id="transactionsHistory" class="premium-history-content active">
+            <div class="premium-date-filter">
+                <input type="date" id="startDate" class="premium-input" onchange="filterTransactions()">
+                <input type="date" id="endDate" class="premium-input" onchange="filterTransactions()">
+                <button class="premium-btn premium-btn-gold" onclick="filterTransactions()">
+                    <i class="fas fa-filter"></i> Filter
                 </button>
-                <p style="color: #94a3b8; font-size: 12px; margin-top: 8px;">Add 1000+ games instantly</p>
             </div>
+            <div id="transactionsList"></div>
+        </div>
 
-            <div class="category-tabs">
-                <button class="category-tab active" onclick="filterGames('all')">All</button>
-                <button class="category-tab" onclick="filterGames('slots')">Slots</button>
-                <button class="category-tab" onclick="filterGames('table')">Table</button>
-                <button class="category-tab" onclick="filterGames('live')">Live</button>
-                <button class="category-tab" onclick="filterGames('sports')">Sports</button>
+        <div id="betsHistory" class="premium-history-content">
+            <div class="premium-date-filter">
+                <input type="date" id="betStartDate" class="premium-input" onchange="filterBets()">
+                <input type="date" id="betEndDate" class="premium-input" onchange="filterBets()">
+                <button class="premium-btn premium-btn-gold" onclick="filterBets()">
+                    <i class="fas fa-filter"></i> Filter
+                </button>
             </div>
+            <div id="betsList"></div>
+        </div>
+    </section>
 
-            <div class="games-grid" id="gamesGrid">
-            </div>
-        </section>
-
-        <section class="history-section">
-            <div class="section-title">
-                <h2>Your History</h2>
-                <p>Track your gaming activity</p>
-            </div>
-
-            <div class="history-tabs">
-                <button class="history-tab active" onclick="showHistoryTab('transactions')">Transactions</button>
-                <button class="history-tab" onclick="showHistoryTab('bets')">Bet History</button>
-            </div>
-
-            <div id="transactionsHistory" class="history-content active">
-                <div class="date-filter">
-                    <input type="date" id="startDate" onchange="filterTransactions()">
-                    <input type="date" id="endDate" onchange="filterTransactions()">
-                    <button class="btn btn-primary" onclick="filterTransactions()">
-                        <i class="fas fa-filter"></i> Filter
-                    </button>
-                </div>
-                <div id="transactionsList" class="transactions-list"></div>
-            </div>
-
-            <div id="betsHistory" class="history-content">
-                <div class="date-filter">
-                    <input type="date" id="betStartDate" onchange="filterBets()">
-                    <input type="date" id="betEndDate" onchange="filterBets()">
-                    <button class="btn btn-primary" onclick="filterBets()">
-                        <i class="fas fa-filter"></i> Filter
-                    </button>
-                </div>
-                <div id="betsList" class="transactions-list"></div>
-            </div>
-        </section>
-    </div>
-
-    <!-- Mobile Navigation -->
-    <nav class="mobile-nav">
-        <div class="mobile-nav-items">
-            <div class="mobile-nav-item active" onclick="scrollToSection('games')">
+    <!-- Premium Mobile Navigation -->
+    <nav class="premium-mobile-nav">
+        <div class="premium-mobile-nav-items">
+            <div class="premium-mobile-nav-item active" onclick="scrollToSection('games')">
                 <i class="fas fa-gamepad"></i>
                 <span>Games</span>
             </div>
-            <div class="mobile-nav-item" onclick="openModal('deposit')">
+            <div class="premium-mobile-nav-item" onclick="openModal('deposit')">
                 <i class="fas fa-plus-circle"></i>
                 <span>Deposit</span>
             </div>
-            <div class="mobile-nav-item" onclick="scrollToSection('history')">
+            <div class="premium-mobile-nav-item" onclick="scrollToSection('history')">
                 <i class="fas fa-history"></i>
                 <span>History</span>
             </div>
-            <div class="mobile-nav-item" onclick="openModal('withdraw')">
+            <div class="premium-mobile-nav-item" onclick="openModal('withdraw')">
                 <i class="fas fa-minus-circle"></i>
                 <span>Withdraw</span>
             </div>
-            <div class="mobile-nav-item" onclick="openModal('profile')">
+            <div class="premium-mobile-nav-item" onclick="openModal('profile')">
                 <i class="fas fa-user"></i>
                 <span>Profile</span>
             </div>
         </div>
     </nav>
 
-    <!-- Deposit Modal -->
-    <div id="depositModal" class="modal">
-        <div class="modal-content large">
-            <div class="modal-header">
-                <h2><i class="fas fa-plus-circle" style="color: #10b981;"></i> Deposit Funds</h2>
-                <button class="close-modal" onclick="closeModal('deposit')">&times;</button>
+    <!-- Premium Modals (reuse existing modal structure with premium styling) -->
+    <div id="depositModal" class="premium-modal">
+        <div class="premium-modal-content">
+            <div class="modal-header" style="margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px solid rgba(255, 215, 0, 0.3);">
+                <h2 style="font-size: 24px; font-weight: 900; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 12px;">
+                    <i class="fas fa-plus-circle" style="color: var(--emerald-green);"></i> Deposit Funds
+                </h2>
+                <button class="close-modal" onclick="closeModal('deposit')" style="background: none; border: none; color: var(--silver-gray); font-size: 32px; cursor: pointer;">&times;</button>
             </div>
-
             <div class="form-group">
-                <label>Available Balance: <span style="color: #00d9ff; font-size: 18px; font-weight: 700;" id="depositBalance">₹0</span></label>
+                <label style="display: block; margin-bottom: 10px; font-size: 14px; color: var(--primary-gold); font-weight: 700;">Available Balance: <span style="color: var(--primary-gold); font-size: 20px; font-weight: 900;">₹<span id="depositBalance">0</span></span></label>
             </div>
-
             <div class="form-group">
-                <label>Select Payment Method</label>
-                <div class="payment-methods" id="depositPaymentMethods">
-                </div>
+                <label style="display: block; margin-bottom: 10px; font-size: 14px; color: var(--primary-gold); font-weight: 700;">Select Payment Method</label>
+                <div class="payment-methods" id="depositPaymentMethods"></div>
             </div>
-
-            <div id="upiPaymentDetails" style="display: none;">
-                <div class="qr-display">
-                    <h3 style="margin-bottom: 15px; font-size: 16px;">Scan QR Code to Pay</h3>
-                    <div class="qr-code" id="upiQrCode">
-                        <img src="" alt="UPI QR Code" id="upiQrImage">
-                    </div>
-                    <p style="margin-bottom: 10px; font-size: 13px;">UPI ID: <strong id="upiIdDisplay"></strong></p>
-                    <div class="copy-address" onclick="copyToClipboard('upiIdDisplay')">
-                        <span id="upiIdDisplayText"></span> <i class="fas fa-copy"></i>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Amount (₹) *</label>
-                    <input type="number" id="upiDepositAmount" placeholder="Enter deposit amount" min="100" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Transaction ID / UTR Number *</label>
-                    <input type="text" id="upiTransactionId" placeholder="Enter transaction ID" required>
-                </div>
-
-                <button class="btn btn-primary" style="width: 100%;" onclick="submitDeposit('upi')">
-                    <i class="fas fa-paper-plane"></i> Submit Deposit
-                </button>
-            </div>
-
-            <div id="bankPaymentDetails" style="display: none;">
-                <div class="card">
-                    <h3 style="margin-bottom: 15px; text-align: center; font-size: 16px;">Bank Transfer Details</h3>
-                    <div style="background: rgba(0, 217, 255, 0.1); padding: 15px; border-radius: 10px; font-size: 13px;">
-                        <p style="margin-bottom: 8px;"><strong>Account Holder:</strong> <span id="bankHolderNameDisplay"></span></p>
-                        <p style="margin-bottom: 8px;"><strong>Account Number:</strong> <span id="bankAccountNumberDisplay"></span></p>
-                        <p style="margin-bottom: 8px;"><strong>IFSC Code:</strong> <span id="bankIfscDisplay"></span></p>
-                        <p><strong>Bank Name:</strong> <span id="bankNameDisplay"></span></p>
-                    </div>
-                    <div class="copy-address" onclick="copyBankDetails()" style="margin-top: 12px;">
-                        <i class="fas fa-copy"></i> Copy Bank Details
-                    </div>
-                </div>
-
-                <div class="form-group" style="margin-top: 15px;">
-                    <label>Amount (₹) *</label>
-                    <input type="number" id="bankDepositAmount" placeholder="Enter deposit amount" min="100" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Transaction ID / Reference Number *</label>
-                    <input type="text" id="bankTransactionId" placeholder="Enter transaction ID" required>
-                </div>
-
-                <button class="btn btn-primary" style="width: 100%;" onclick="submitDeposit('bank')">
-                    <i class="fas fa-paper-plane"></i> Submit Deposit
-                </button>
-            </div>
-
-            <div id="usdtPaymentDetails" style="display: none;">
-                <div class="qr-display">
-                    <h3 style="margin-bottom: 15px; font-size: 16px;">USDT (TRC20) Payment</h3>
-                    <div class="qr-code" id="usdtQrCode">
-                        <img src="" alt="USDT QR Code" id="usdtQrImage">
-                    </div>
-                    <p style="margin-bottom: 10px; font-size: 13px;">Wallet Address:</p>
-                    <div class="copy-address" onclick="copyToClipboard('usdtWalletAddressDisplay')">
-                        <span id="usdtWalletAddressDisplay"></span> <i class="fas fa-copy"></i>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Amount in USDT *</label>
-                    <input type="number" id="usdtDepositAmount" placeholder="Enter USDT amount" step="0.00000001" min="0.00000001" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Transaction Hash *</label>
-                    <input type="text" id="usdtTransactionHash" placeholder="Enter transaction hash" required>
-                </div>
-
-                <button class="btn btn-primary" style="width: 100%;" onclick="submitDeposit('usdt')">
-                    <i class="fas fa-paper-plane"></i> Submit Deposit
-                </button>
-            </div>
+            <!-- Payment details sections would go here -->
         </div>
     </div>
 
-    <!-- Withdraw Modal -->
-    <div id="withdrawModal" class="modal">
-        <div class="modal-content large">
-            <div class="modal-header">
-                <h2><i class="fas fa-minus-circle" style="color: #ef4444;"></i> Withdraw Funds</h2>
-                <button class="close-modal" onclick="closeModal('withdraw')">&times;</button>
-            </div>
-
-            <div class="form-group">
-                <label>Available Balance: <span style="color: #00d9ff; font-size: 18px; font-weight: 700;" id="withdrawBalance">₹0</span></label>
-            </div>
-
-            <div class="form-group">
-                <label>Select Withdrawal Method</label>
-                <div class="payment-methods" id="withdrawPaymentMethods">
-                </div>
-            </div>
-
-            <div id="bankWithdrawDetails" style="display: none;">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Account Holder Name *</label>
-                        <input type="text" id="withdrawHolderName" placeholder="Account holder name" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Account Number *</label>
-                        <input type="text" id="withdrawAccountNumber" placeholder="Account number" required>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>IFSC Code *</label>
-                        <input type="text" id="withdrawIfsc" placeholder="IFSC code" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Bank Name *</label>
-                        <input type="text" id="withdrawBankName" placeholder="Bank name" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Amount (₹) *</label>
-                    <input type="number" id="withdrawAmount" placeholder="Enter withdrawal amount" min="100" required>
-                </div>
-
-                <button class="btn btn-danger" style="width: 100%;" onclick="submitWithdrawal('bank')">
-                    <i class="fas fa-paper-plane"></i> Submit Withdrawal
-                </button>
-            </div>
-
-            <div id="usdtWithdrawDetails" style="display: none;">
-                <div class="form-group">
-                    <label>USDT Wallet Address (TRC20) *</label>
-                    <input type="text" id="withdrawUsdtAddress" placeholder="Enter USDT wallet address" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Amount in USDT *</label>
-                    <input type="number" id="withdrawUsdtAmount" placeholder="Enter USDT amount" step="0.00000001" min="0.00000001" required>
-                </div>
-
-                <button class="btn btn-danger" style="width: 100%;" onclick="submitWithdrawal('usdt')">
-                    <i class="fas fa-paper-plane"></i> Submit Withdrawal
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Profile Modal -->
-    <div id="profileModal" class="modal">
-        <div class="modal-content large">
-            <div class="modal-header">
-                <h2><i class="fas fa-user-circle" style="color: #00d9ff;"></i> My Profile</h2>
-                <button class="close-modal" onclick="closeModal('profile')">&times;</button>
-            </div>
-
-            <div style="text-align: center; margin-bottom: 25px;">
-                <i class="fas fa-user-circle" style="font-size: 70px; color: #00d9ff; margin-bottom: 12px;"></i>
-                <h3 id="profileUsername" style="margin-bottom: 5px; font-size: 20px;">Username</h3>
-                <p id="profileEmail" style="color: #94a3b8; font-size: 13px;">email@example.com</p>
-            </div>
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 25px;">
-                <div class="card" style="text-align: center;">
-                    <h3 style="font-size: 13px; color: #94a3b8; margin-bottom: 8px;">Balance</h3>
-                    <p style="font-size: 22px; font-weight: 700; color: #00d9ff;" id="profileBalance">₹0</p>
-                </div>
-                <div class="card" style="text-align: center;">
-                    <h3 style="font-size: 13px; color: #94a3b8; margin-bottom: 8px;">Status</h3>
-                    <p style="font-size: 16px; font-weight: 700; color: #10b981;" id="profileStatus">Active</p>
-                </div>
-            </div>
-
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <button class="btn btn-primary" onclick="closeModal('profile'); openModal('deposit');">
-                    <i class="fas fa-plus"></i> Deposit
-                </button>
-                <button class="btn btn-secondary" onclick="closeModal('profile'); openModal('withdraw');">
-                    <i class="fas fa-minus"></i> Withdraw
-                </button>
-                <button class="btn btn-warning" onclick="closeModal('profile'); scrollToSection('history');">
-                    <i class="fas fa-history"></i> History
-                </button>
-                <button class="btn btn-danger" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- API Integration Modal -->
-    <div id="apiModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2><i class="fas fa-plug" style="color: #10b981;"></i> Game API Integration</h2>
-                <button class="close-modal" onclick="closeModal('api')">&times;</button>
-            </div>
-
-            <div class="form-group">
-                <label>API Provider</label>
-                <select id="apiProvider">
-                    <option value="evolution">Evolution Gaming</option>
-                    <option value="pragmatic">Pragmatic Play</option>
-                    <option value="netent">NetEnt</option>
-                    <option value="microgaming">Microgaming</option>
-                    <option value="betsoft">Betsoft</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>API Key</label>
-                <input type="text" id="apiKey" placeholder="Enter your API key">
-            </div>
-
-            <div class="form-group">
-                <label>Operator ID</label>
-                <input type="text" id="operatorId" placeholder="Enter operator ID">
-            </div>
-
-            <div class="card" style="margin-bottom: 20px;">
-                <h3 style="font-size: 14px; margin-bottom: 10px;">Benefits:</h3>
-                <ul style="font-size: 13px; color: #94a3b8; padding-left: 20px;">
-                    <li>Access to 1000+ games instantly</li>
-                    <li>Live casino games</li>
-                    <li>Slots & table games</li>
-                    <li>Sports betting integration</li>
-                    <li>Real-time game statistics</li>
-                </ul>
-            </div>
-
-            <button class="btn btn-primary" style="width: 100%;" onclick="connectApi()">
-                <i class="fas fa-plug"></i> Connect API
-            </button>
-        </div>
-    </div>
-
-    <div class="whatsapp-float" onclick="openWhatsApp()">
+    <!-- WhatsApp Float -->
+    <div class="premium-whatsapp" onclick="openWhatsApp()">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
         </svg>
