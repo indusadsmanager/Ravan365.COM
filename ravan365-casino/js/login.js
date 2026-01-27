@@ -1,3 +1,4 @@
+
 // Show tab
 function showTab(tab) {
     const loginSection = document.getElementById('loginSection');
