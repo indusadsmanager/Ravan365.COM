@@ -1,699 +1,783 @@
-// Initialize data
-let users = JSON.parse(localStorage.getItem('ravan365_users') || '[]');
-let deposits = JSON.parse(localStorage.getItem('ravan365_deposits') || '[]');
-let withdrawals = JSON.parse(localStorage.getItem('ravan365_withdrawals') || '[]');
-let games = JSON.parse(localStorage.getItem('ravan365_games') || '[]');
-let registrations = JSON.parse(localStorage.getItem('ravan365_pending_registrations') || '[]');
-
-// Payment Settings
-let paymentSettings = JSON.parse(localStorage.getItem('ravan365_payment_settings') || JSON.stringify({
-    upi: {
-        enabled: true,
-        qrUrl: '',
-        upiId: ''
-    },
-    bank: {
-        enabled: true,
-        holderName: '',
-        accountNumber: '',
-        ifsc: '',
-        bankName: ''
-    },
-    usdt: {
-        enabled: true,
-        qrUrl: '',
-        walletAddress: ''
-    }
-}));
-
-// Platform Settings
-let platformSettings = JSON.parse(localStorage.getItem('ravan365_platform_settings') || JSON.stringify({
-    platformName: 'Ravan365',
-    whatsappNumber: '1234567890',
-    minDeposit: 100,
-    maxWithdraw: 50000,
-    withdrawalTime: 24
-}));
-
-// Initialize games if empty
-if (games.length === 0) {
-    games = [
-        { id: 1, name: 'Lucky Slots', category: 'slots', provider: 'NetEnt', minBet: 10, maxBet: 5000, winRatio: 50, status: 'active' },
-        { id: 2, name: 'Blackjack Pro', category: 'table', provider: 'Evolution', minBet: 50, maxBet: 10000, winRatio: 45, status: 'active' },
-        { id: 3, name: 'Live Roulette', category: 'live', provider: 'Pragmatic', minBet: 20, maxBet: 15000, winRatio: 48, status: 'active' },
-        { id: 4, name: 'Football Betting', category: 'sports', provider: 'Betradar', minBet: 100, maxBet: 50000, winRatio: 42, status: 'active' },
-        { id: 5, name: 'Mega Fortune', category: 'slots', provider: 'Microgaming', minBet: 25, maxBet: 8000, winRatio: 55, status: 'active' },
-        { id: 6, name: 'Poker Stars', category: 'table', provider: 'Playtech', minBet: 30, maxBet: 6000, winRatio: 47, status: 'active' }
-    ];
-    saveGames();
-}
-
-// Initialize
+// Initialize admin panel
 document.addEventListener('DOMContentLoaded', function() {
-    loadDashboard();
+    loadDashboardStats();
     loadRegistrations();
     loadUsers();
     loadDeposits();
     loadWithdrawals();
     loadGames();
     loadPaymentSettings();
-    loadPlatformSettings();
+    loadSettings();
     updateNotificationCount();
 });
 
-// Navigation
-function showSection(sectionId) {
-    const sections = document.querySelectorAll('.content-section');
-    sections.forEach(section => {
-        section.classList.remove('active');
-    });
-
-    const selectedSection = document.getElementById(sectionId);
-    if (selectedSection) {
-        selectedSection.classList.add('active');
-    }
-
-    const navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(item => {
-        item.classList.remove('active');
-    });
-
-    event.currentTarget.classList.add('active');
-
-    // Refresh data when switching sections
-    if (sectionId === 'dashboard') loadDashboard();
-    if (sectionId === 'registrations') loadRegistrations();
-    if (sectionId === 'users') loadUsers();
-    if (sectionId === 'deposits') loadDeposits();
-    if (sectionId === 'withdrawals') loadWithdrawals();
-    if (sectionId === 'games') loadGames();
-}
-
+// Sidebar toggle
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
     sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
 }
 
-// Dashboard
-function loadDashboard() {
-    document.getElementById('totalUsers').textContent = users.length;
-    
-    let totalBalance = 0;
-    users.forEach(user => {
-        totalBalance += user.balance || 0;
+// Show section
+function showSection(sectionId) {
+    // Hide all sections
+    document.querySelectorAll('.content-section').forEach(section => {
+        section.classList.remove('active');
     });
-    document.getElementById('totalBalance').textContent = '₹' + totalBalance.toLocaleString();
+    
+    // Remove active class from all nav items
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // Show selected section
+    document.getElementById(sectionId).classList.add('active');
+    
+    // Add active class to clicked nav item
+    event.currentTarget.classList.add('active');
+    
+    // Close sidebar on mobile
+    if (window.innerWidth <= 1024) {
+        toggleSidebar();
+    }
+}
 
-    const pendingDepositsCount = deposits.filter(d => d.status === 'pending').length;
-    document.getElementById('pendingDeposits').textContent = pendingDepositsCount;
-
-    const pendingWithdrawalsCount = withdrawals.filter(w => w.status === 'pending').length;
-    document.getElementById('pendingWithdrawals').textContent = pendingWithdrawalsCount;
-
+// Load dashboard stats
+function loadDashboardStats() {
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const deposits = JSON.parse(localStorage.getItem('deposits') || '[]');
+    const withdrawals = JSON.parse(localStorage.getItem('withdrawals') || '[]');
+    
+    // Calculate total balance
+    const totalBalance = users.reduce((sum, user) => sum + (user.balance || 0), 0);
+    
+    // Calculate pending deposits
+    const pendingDeposits = deposits.filter(d => d.status === 'pending').length;
+    
+    // Calculate pending withdrawals
+    const pendingWithdrawals = withdrawals.filter(w => w.status === 'pending').length;
+    
+    // Update UI
+    document.getElementById('totalUsers').textContent = users.length;
+    document.getElementById('totalBalance').textContent = `₹${totalBalance.toLocaleString()}`;
+    document.getElementById('pendingDeposits').textContent = pendingDeposits;
+    document.getElementById('pendingWithdrawals').textContent = pendingWithdrawals;
+    
     // Load recent activity
     loadRecentActivity();
 }
 
+// Load recent activity
 function loadRecentActivity() {
-    const activityDiv = document.getElementById('recentActivity');
-    const allActivity = [
+    const deposits = JSON.parse(localStorage.getItem('deposits') || '[]');
+    const withdrawals = JSON.parse(localStorage.getItem('withdrawals') || '[]');
+    const registrations = JSON.parse(localStorage.getItem('registrations') || '[]');
+    
+    // Combine all activities
+    const activities = [
         ...deposits.map(d => ({ ...d, type: 'deposit' })),
-        ...withdrawals.map(w => ({ ...w, type: 'withdrawal' }))
-    ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 10);
-
-    if (allActivity.length === 0) {
-        activityDiv.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 40px;">No recent activity</p>';
+        ...withdrawals.map(w => ({ ...w, type: 'withdrawal' })),
+        ...registrations.map(r => ({ ...r, type: 'registration' }))
+    ];
+    
+    // Sort by date (newest first) and take last 10
+    activities.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    const recentActivities = activities.slice(0, 10);
+    
+    const activityContainer = document.getElementById('recentActivity');
+    
+    if (recentActivities.length === 0) {
+        activityContainer.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 30px;">No recent activity</p>';
         return;
     }
-
-    let html = '<table class="data-table"><thead><tr><th>Type</th><th>User</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead><tbody>';
     
-    allActivity.forEach(activity => {
-        const user = users.find(u => u.id === activity.userId);
-        const typeClass = activity.type === 'deposit' ? 'badge-success' : 'badge-danger';
-        const typeText = activity.type === 'deposit' ? 'Deposit' : 'Withdrawal';
-        const statusClass = activity.status === 'completed' ? 'badge-success' : activity.status === 'pending' ? 'badge-warning' : 'badge-danger';
+    activityContainer.innerHTML = recentActivities.map(activity => {
+        const date = new Date(activity.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        let icon, text, color;
         
-        html += `
-            <tr>
-                <td><span class="badge ${typeClass}">${typeText}</span></td>
-                <td>${user ? user.username : 'Unknown'}</td>
-                <td>₹${activity.amount.toLocaleString()}</td>
-                <td><span class="status-badge ${activity.status}">${activity.status}</span></td>
-                <td>${new Date(activity.createdAt).toLocaleString()}</td>
-            </tr>
+        if (activity.type === 'deposit') {
+            icon = 'fa-arrow-down';
+            text = `Deposit of ₹${activity.amount} by ${activity.username}`;
+            color = '#10b981';
+        } else if (activity.type === 'withdrawal') {
+            icon = 'fa-arrow-up';
+            text = `Withdrawal of ₹${activity.amount} by ${activity.username}`;
+            color = '#ef4444';
+        } else {
+            icon = 'fa-user-plus';
+            text = `New registration: ${activity.username}`;
+            color = '#00d9ff';
+        }
+        
+        return `
+            <div style="display: flex; align-items: center; gap: 15px; padding: 12px; border-bottom: 1px solid #24306a;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: ${color}20; display: flex; justify-content: center; align-items: center;">
+                    <i class="fas ${icon}" style="color: ${color};"></i>
+                </div>
+                <div style="flex: 1;">
+                    <p style="font-size: 14px; margin-bottom: 3px;">${text}</p>
+                    <p style="font-size: 12px; color: #94a3b8;">${date}</p>
+                </div>
+            </div>
         `;
-    });
-
-    html += '</tbody></table>';
-    activityDiv.innerHTML = html;
+    }).join('');
 }
 
-// Registrations
+// Load registrations
 function loadRegistrations() {
-    const tbody = document.getElementById('registrationsTable');
-    tbody.innerHTML = '';
-
+    const registrations = JSON.parse(localStorage.getItem('registrations') || '[]');
+    const tableBody = document.getElementById('registrationsTable');
+    
     if (registrations.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 40px;">No new registrations</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 30px; color: #94a3b8;">No new registrations</td></tr>';
         return;
     }
-
-    registrations.forEach(reg => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td><strong>${reg.username}</strong></td>
-            <td>${reg.email}</td>
-            <td>${reg.phone}</td>
-            <td>${new Date(reg.registeredAt).toLocaleString()}</td>
-            <td>
-                <div class="action-buttons">
-                    <button class="action-btn approve" onclick="approveRegistration(${reg.id})">
+    
+    tableBody.innerHTML = registrations.map(reg => {
+        const date = new Date(reg.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        
+        return `
+            <tr>
+                <td>${reg.username}</td>
+                <td>${reg.email || 'N/A'}</td>
+                <td>${reg.phone || 'N/A'}</td>
+                <td>${date}</td>
+                <td>
+                    <button class="btn btn-success" style="padding: 6px 12px; font-size: 11px;" onclick="approveRegistration(${reg.id})">
                         <i class="fas fa-check"></i> Approve
                     </button>
-                    <button class="action-btn reject" onclick="rejectRegistration(${reg.id})">
+                    <button class="btn btn-danger" style="padding: 6px 12px; font-size: 11px;" onclick="rejectRegistration(${reg.id})">
                         <i class="fas fa-times"></i> Reject
                     </button>
-                </div>
-            </td>
+                </td>
+            </tr>
         `;
-        tbody.appendChild(row);
-    });
+    }).join('');
 }
 
+// Approve registration
 function approveRegistration(id) {
+    const registrations = JSON.parse(localStorage.getItem('registrations') || '[]');
     const regIndex = registrations.findIndex(r => r.id === id);
-    if (regIndex === -1) return;
-
-    const reg = registrations[regIndex];
     
-    // Add to users
-    users.push({
-        id: reg.id,
-        username: reg.username,
-        email: reg.email,
-        phone: reg.phone,
-        password: reg.password,
-        balance: 0,
-        status: 'active',
-        createdAt: reg.createdAt,
-        lastLogin: null
-    });
-
-    // Remove from registrations
-    registrations.splice(regIndex, 1);
-
-    saveUsers();
-    saveRegistrations();
-    loadRegistrations();
-    loadDashboard();
-    updateNotificationCount();
-
-    showNotification(`User ${reg.username} approved successfully!`, 'success');
+    if (regIndex !== -1) {
+        // User is already in users array from registration
+        alert('User approved successfully!');
+        
+        // Remove from registrations
+        registrations.splice(regIndex, 1);
+        localStorage.setItem('registrations', JSON.stringify(registrations));
+        
+        loadRegistrations();
+        loadDashboardStats();
+    }
 }
 
+// Reject registration
 function rejectRegistration(id) {
-    if (!confirm('Are you sure you want to reject this registration?')) return;
-
+    const registrations = JSON.parse(localStorage.getItem('registrations') || '[]');
     const regIndex = registrations.findIndex(r => r.id === id);
-    if (regIndex === -1) return;
-
-    registrations.splice(regIndex, 1);
-    saveRegistrations();
-    loadRegistrations();
-    updateNotificationCount();
-
-    showNotification('Registration rejected', 'info');
+    
+    if (regIndex !== -1) {
+        // Remove from users array
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const userIndex = users.findIndex(u => u.id === id);
+        
+        if (userIndex !== -1) {
+            users.splice(userIndex, 1);
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+        
+        // Remove from registrations
+        registrations.splice(regIndex, 1);
+        localStorage.setItem('registrations', JSON.stringify(registrations));
+        
+        alert('Registration rejected successfully!');
+        loadRegistrations();
+        loadDashboardStats();
+    }
 }
 
+// Clear registrations
 function clearRegistrations() {
-    if (!confirm('Are you sure you want to clear all registrations?')) return;
-    registrations = [];
-    saveRegistrations();
-    loadRegistrations();
-    updateNotificationCount();
-    showNotification('All registrations cleared', 'success');
+    if (confirm('Are you sure you want to clear all registrations?')) {
+        localStorage.setItem('registrations', JSON.stringify([]));
+        loadRegistrations();
+        loadDashboardStats();
+    }
 }
 
+// Filter registrations
 function filterRegistrations() {
     const searchTerm = document.getElementById('searchRegistrations').value.toLowerCase();
-    const rows = document.querySelectorAll('#registrationsTable tr');
+    const registrations = JSON.parse(localStorage.getItem('registrations') || '[]');
     
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(searchTerm) ? '' : 'none';
-    });
-}
-
-// Users
-function loadUsers() {
-    const tbody = document.getElementById('usersTable');
-    tbody.innerHTML = '';
-
-    if (users.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #94a3b8; padding: 40px;">No users found</td></tr>';
+    const filtered = registrations.filter(reg => 
+        reg.username.toLowerCase().includes(searchTerm) ||
+        (reg.email && reg.email.toLowerCase().includes(searchTerm)) ||
+        (reg.phone && reg.phone.includes(searchTerm))
+    );
+    
+    const tableBody = document.getElementById('registrationsTable');
+    
+    if (filtered.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 30px; color: #94a3b8;">No registrations found</td></tr>';
         return;
     }
-
-    users.forEach(user => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td><strong>${user.username}</strong></td>
-            <td>${user.email}</td>
-            <td>${user.phone}</td>
-            <td>₹${(user.balance || 0).toLocaleString()}</td>
-            <td><span class="status-badge ${user.status}">${user.status}</span></td>
-            <td>
-                <div class="action-buttons">
-                    <button class="action-btn view" onclick="viewUser(${user.id})">
-                        <i class="fas fa-eye"></i>
+    
+    tableBody.innerHTML = filtered.map(reg => {
+        const date = new Date(reg.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        
+        return `
+            <tr>
+                <td>${reg.username}</td>
+                <td>${reg.email || 'N/A'}</td>
+                <td>${reg.phone || 'N/A'}</td>
+                <td>${date}</td>
+                <td>
+                    <button class="btn btn-success" style="padding: 6px 12px; font-size: 11px;" onclick="approveRegistration(${reg.id})">
+                        <i class="fas fa-check"></i> Approve
                     </button>
-                    <button class="action-btn ${user.status === 'active' ? 'ban' : 'unban'}" onclick="toggleBanUser(${user.id})">
-                        <i class="fas ${user.status === 'active' ? 'fa-ban' : 'fa-check'}"></i>
-                        ${user.status === 'active' ? 'Ban' : 'Unban'}
+                    <button class="btn btn-danger" style="padding: 6px 12px; font-size: 11px;" onclick="rejectRegistration(${reg.id})">
+                        <i class="fas fa-times"></i> Reject
                     </button>
-                    <button class="action-btn edit" onclick="editUserBalance(${user.id})">
-                        <i class="fas fa-wallet"></i>
-                    </button>
-                </div>
-            </td>
+                </td>
+            </tr>
         `;
-        tbody.appendChild(row);
-    });
+    }).join('');
 }
 
-function viewUser(id) {
-    const user = users.find(u => u.id === id);
-    if (!user) return;
-
-    const details = `
-        Username: ${user.username}
-        Email: ${user.email}
-        Phone: ${user.phone}
-        Balance: ₹${(user.balance || 0).toLocaleString()}
-        Status: ${user.status}
-        Created: ${new Date(user.createdAt).toLocaleString()}
-    `;
-    showNotification(details, 'info');
-}
-
-function toggleBanUser(id) {
-    const user = users.find(u => u.id === id);
-    if (!user) return;
-
-    const action = user.status === 'active' ? 'ban' : 'unban';
-    if (!confirm(`Are you sure you want to ${action} this user?`)) return;
-
-    user.status = user.status === 'active' ? 'banned' : 'active';
-    saveUsers();
-    loadUsers();
-    loadDashboard();
-
-    showNotification(`User ${user.username} ${action}ned successfully!`, user.status === 'active' ? 'success' : 'warning');
-}
-
-function editUserBalance(id) {
-    const user = users.find(u => u.id === id);
-    if (!user) return;
-
-    const newBalance = prompt(`Enter new balance for ${user.username}:`, user.balance || 0);
-    if (newBalance === null) return;
-
-    const balance = parseFloat(newBalance);
-    if (isNaN(balance) || balance < 0) {
-        showNotification('Invalid balance amount', 'error');
+// Load users
+function loadUsers() {
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const tableBody = document.getElementById('usersTable');
+    
+    if (users.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 30px; color: #94a3b8;">No users found</td></tr>';
         return;
     }
-
-    user.balance = balance;
-    saveUsers();
-    loadUsers();
-    loadDashboard();
-
-    showNotification(`Balance updated for ${user.username}`, 'success');
+    
+    tableBody.innerHTML = users.map(user => {
+        return `
+            <tr>
+                <td>${user.username}</td>
+                <td>${user.email || 'N/A'}</td>
+                <td>${user.phone || 'N/A'}</td>
+                <td>₹${user.balance || 0}</td>
+                <td><span class="status-badge ${user.status || 'active'}">${user.status || 'active'}</span></td>
+                <td>
+                    <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11px;" onclick="editUser(${user.id})">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn ${user.status === 'banned' ? 'btn-success' : 'btn-danger'}" style="padding: 6px 12px; font-size: 11px;" onclick="toggleUserStatus(${user.id})">
+                        <i class="fas ${user.status === 'banned' ? 'fa-unlock' : 'fa-ban'}"></i> ${user.status === 'banned' ? 'Unban' : 'Ban'}
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
 }
 
+// Edit user
+function editUser(id) {
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const user = users.find(u => u.id === id);
+    
+    if (user) {
+        const newBalance = prompt(`Current balance: ₹${user.balance}\nEnter new balance:`, user.balance);
+        
+        if (newBalance !== null) {
+            user.balance = parseFloat(newBalance) || 0;
+            
+            const userIndex = users.findIndex(u => u.id === id);
+            users[userIndex] = user;
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            alert('User balance updated successfully!');
+            loadUsers();
+            loadDashboardStats();
+        }
+    }
+}
+
+// Toggle user status
+function toggleUserStatus(id) {
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const userIndex = users.findIndex(u => u.id === id);
+    
+    if (userIndex !== -1) {
+        users[userIndex].status = users[userIndex].status === 'banned' ? 'active' : 'banned';
+        localStorage.setItem('users', JSON.stringify(users));
+        
+        alert(`User ${users[userIndex].status === 'banned' ? 'banned' : 'unbanned'} successfully!`);
+        loadUsers();
+    }
+}
+
+// Filter users
 function filterUsers() {
     const searchTerm = document.getElementById('searchUsers').value.toLowerCase();
     const statusFilter = document.getElementById('userStatusFilter').value;
-    const rows = document.querySelectorAll('#usersTable tr');
     
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        const statusMatch = statusFilter === 'all' || text.includes(statusFilter);
-        const searchMatch = text.includes(searchTerm);
-        row.style.display = statusMatch && searchMatch ? '' : 'none';
-    });
-}
-
-// Deposits
-function loadDeposits() {
-    const tbody = document.getElementById('depositsTable');
-    tbody.innerHTML = '';
-
-    if (deposits.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #94a3b8; padding: 40px;">No deposits found</td></tr>';
+    let users = JSON.parse(localStorage.getItem('users') || '[]');
+    
+    if (searchTerm) {
+        users = users.filter(user => 
+            user.username.toLowerCase().includes(searchTerm) ||
+            (user.email && user.email.toLowerCase().includes(searchTerm)) ||
+            (user.phone && user.phone.includes(searchTerm))
+        );
+    }
+    
+    if (statusFilter !== 'all') {
+        users = users.filter(user => user.status === statusFilter);
+    }
+    
+    const tableBody = document.getElementById('usersTable');
+    
+    if (users.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 30px; color: #94a3b8;">No users found</td></tr>';
         return;
     }
-
-    deposits.forEach(deposit => {
-        const user = users.find(u => u.id === deposit.userId);
-        let paymentDetails = '';
-
-        if (deposit.method === 'upi') {
-            paymentDetails = `UPI ID: ${deposit.paymentDetails.upiId || 'N/A'}`;
-        } else if (deposit.method === 'bank') {
-            paymentDetails = `Bank: ${deposit.paymentDetails.bankName || 'N/A'}`;
-        } else if (deposit.method === 'usdt') {
-            paymentDetails = `USDT Address: ${deposit.paymentDetails.walletAddress?.substring(0, 10) || 'N/A'}...`;
-        }
-
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td><code>${deposit.id}</code></td>
-            <td>${user ? user.username : 'Unknown'}</td>
-            <td><span class="badge badge-info">${deposit.method.toUpperCase()}</span></td>
-            <td style="color: #10b981; font-weight: 600;">₹${deposit.amount.toLocaleString()}</td>
-            <td><small>${paymentDetails}</small></td>
-            <td><span class="status-badge ${deposit.status}">${deposit.status}</span></td>
-            <td>
-                ${deposit.status === 'pending' ? `
-                    <div class="action-buttons">
-                        <button class="action-btn approve" onclick="approveDeposit('${deposit.id}')">
-                            <i class="fas fa-check"></i> Approve
-                        </button>
-                        <button class="action-btn reject" onclick="rejectDeposit('${deposit.id}')">
-                            <i class="fas fa-times"></i> Reject
-                        </button>
-                    </div>
-                ` : '<span style="color: #94a3b8;">-</span>'}
-            </td>
+    
+    tableBody.innerHTML = users.map(user => {
+        return `
+            <tr>
+                <td>${user.username}</td>
+                <td>${user.email || 'N/A'}</td>
+                <td>${user.phone || 'N/A'}</td>
+                <td>₹${user.balance || 0}</td>
+                <td><span class="status-badge ${user.status || 'active'}">${user.status || 'active'}</span></td>
+                <td>
+                    <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11px;" onclick="editUser(${user.id})">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn ${user.status === 'banned' ? 'btn-success' : 'btn-danger'}" style="padding: 6px 12px; font-size: 11px;" onclick="toggleUserStatus(${user.id})">
+                        <i class="fas ${user.status === 'banned' ? 'fa-unlock' : 'fa-ban'}"></i> ${user.status === 'banned' ? 'Unban' : 'Ban'}
+                    </button>
+                </td>
+            </tr>
         `;
-        tbody.appendChild(row);
-    });
+    }).join('');
 }
 
-function approveDeposit(id) {
-    const deposit = deposits.find(d => d.id === id);
-    if (!deposit) return;
-
-    const user = users.find(u => u.id === deposit.userId);
-    if (!user) {
-        showNotification('User not found', 'error');
+// Load deposits
+function loadDeposits() {
+    const deposits = JSON.parse(localStorage.getItem('deposits') || '[]');
+    const tableBody = document.getElementById('depositsTable');
+    
+    if (deposits.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px; color: #94a3b8;">No deposits found</td></tr>';
         return;
     }
-
-    // Update deposit status
-    deposit.status = 'completed';
-    deposit.completedAt = new Date().toISOString();
-
-    // Add to user balance
-    user.balance = (user.balance || 0) + deposit.amount;
-
-    saveDeposits();
-    saveUsers();
-    loadDeposits();
-    loadDashboard();
-
-    showNotification(`Deposit of ₹${deposit.amount.toLocaleString()} approved for ${user.username}`, 'success');
+    
+    tableBody.innerHTML = deposits.map(deposit => {
+        const date = new Date(deposit.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        let detailsText = deposit.details;
+        
+        if (typeof deposit.details === 'object') {
+            detailsText = Object.values(deposit.details).join(', ');
+        }
+        
+        return `
+            <tr>
+                <td>#${deposit.id.toString().slice(-6)}</td>
+                <td>${deposit.username}</td>
+                <td>${deposit.method}</td>
+                <td>₹${deposit.amount}</td>
+                <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${detailsText}</td>
+                <td><span class="status-badge ${deposit.status}">${deposit.status}</span></td>
+                <td>
+                    ${deposit.status === 'pending' ? `
+                        <button class="btn btn-success" style="padding: 6px 12px; font-size: 11px;" onclick="approveDeposit(${deposit.id})">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn btn-danger" style="padding: 6px 12px; font-size: 11px;" onclick="rejectDeposit(${deposit.id})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    ` : '-'}
+                </td>
+            </tr>
+        `;
+    }).join('');
 }
 
+// Approve deposit
+function approveDeposit(id) {
+    const deposits = JSON.parse(localStorage.getItem('deposits') || '[]');
+    const depositIndex = deposits.findIndex(d => d.id === id);
+    
+    if (depositIndex !== -1) {
+        const deposit = deposits[depositIndex];
+        deposit.status = 'completed';
+        deposits[depositIndex] = deposit;
+        localStorage.setItem('deposits', JSON.stringify(deposits));
+        
+        // Update user balance
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const userIndex = users.findIndex(u => u.id === deposit.userId);
+        
+        if (userIndex !== -1) {
+            users[userIndex].balance = (users[userIndex].balance || 0) + deposit.amount;
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+        
+        alert('Deposit approved successfully!');
+        loadDeposits();
+        loadDashboardStats();
+    }
+}
+
+// Reject deposit
 function rejectDeposit(id) {
-    if (!confirm('Are you sure you want to reject this deposit?')) return;
-
-    const deposit = deposits.find(d => d.id === id);
-    if (!deposit) return;
-
-    deposit.status = 'rejected';
-    deposit.completedAt = new Date().toISOString();
-
-    saveDeposits();
-    loadDeposits();
-    loadDashboard();
-
-    showNotification(`Deposit rejected`, 'warning');
+    const deposits = JSON.parse(localStorage.getItem('deposits') || '[]');
+    const depositIndex = deposits.findIndex(d => d.id === id);
+    
+    if (depositIndex !== -1) {
+        deposits[depositIndex].status = 'rejected';
+        localStorage.setItem('deposits', JSON.stringify(deposits));
+        
+        alert('Deposit rejected successfully!');
+        loadDeposits();
+    }
 }
 
+// Filter deposits
 function filterDeposits() {
     const searchTerm = document.getElementById('searchDeposits').value.toLowerCase();
     const statusFilter = document.getElementById('depositStatusFilter').value;
-    const rows = document.querySelectorAll('#depositsTable tr');
     
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        const statusMatch = statusFilter === 'all' || text.includes(statusFilter);
-        const searchMatch = text.includes(searchTerm);
-        row.style.display = statusMatch && searchMatch ? '' : 'none';
-    });
-}
-
-// Withdrawals
-function loadWithdrawals() {
-    const tbody = document.getElementById('withdrawalsTable');
-    tbody.innerHTML = '';
-
-    if (withdrawals.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #94a3b8; padding: 40px;">No withdrawals found</td></tr>';
+    let deposits = JSON.parse(localStorage.getItem('deposits') || '[]');
+    
+    if (searchTerm) {
+        deposits = deposits.filter(deposit => 
+            deposit.username.toLowerCase().includes(searchTerm) ||
+            deposit.method.toLowerCase().includes(searchTerm) ||
+            deposit.transactionId.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    if (statusFilter !== 'all') {
+        deposits = deposits.filter(deposit => deposit.status === statusFilter);
+    }
+    
+    const tableBody = document.getElementById('depositsTable');
+    
+    if (deposits.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px; color: #94a3b8;">No deposits found</td></tr>';
         return;
     }
-
-    withdrawals.forEach(withdrawal => {
-        const user = users.find(u => u.id === withdrawal.userId);
-        let paymentDetails = '';
-
-        if (withdrawal.method === 'bank') {
-            paymentDetails = `
-                Account: ${withdrawal.paymentDetails.accountNumber || 'N/A'}<br>
-                IFSC: ${withdrawal.paymentDetails.ifsc || 'N/A'}<br>
-                Bank: ${withdrawal.paymentDetails.bankName || 'N/A'}
-            `;
-        } else if (withdrawal.method === 'usdt') {
-            paymentDetails = `USDT Address: ${withdrawal.paymentDetails.walletAddress || 'N/A'}`;
+    
+    tableBody.innerHTML = deposits.map(deposit => {
+        const date = new Date(deposit.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        let detailsText = deposit.details;
+        
+        if (typeof deposit.details === 'object') {
+            detailsText = Object.values(deposit.details).join(', ');
         }
-
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td><code>${withdrawal.id}</code></td>
-            <td>${user ? user.username : 'Unknown'}</td>
-            <td><span class="badge badge-danger">${withdrawal.method.toUpperCase()}</span></td>
-            <td style="color: #ef4444; font-weight: 600;">₹${withdrawal.amount.toLocaleString()}</td>
-            <td><small>${paymentDetails}</small></td>
-            <td><span class="status-badge ${withdrawal.status}">${withdrawal.status}</span></td>
-            <td>
-                ${withdrawal.status === 'pending' ? `
-                    <div class="action-buttons">
-                        <button class="action-btn approve" onclick="approveWithdrawal('${withdrawal.id}')">
-                            <i class="fas fa-check"></i> Approve
+        
+        return `
+            <tr>
+                <td>#${deposit.id.toString().slice(-6)}</td>
+                <td>${deposit.username}</td>
+                <td>${deposit.method}</td>
+                <td>₹${deposit.amount}</td>
+                <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${detailsText}</td>
+                <td><span class="status-badge ${deposit.status}">${deposit.status}</span></td>
+                <td>
+                    ${deposit.status === 'pending' ? `
+                        <button class="btn btn-success" style="padding: 6px 12px; font-size: 11px;" onclick="approveDeposit(${deposit.id})">
+                            <i class="fas fa-check"></i>
                         </button>
-                        <button class="action-btn reject" onclick="rejectWithdrawal('${withdrawal.id}')">
-                            <i class="fas fa-times"></i> Reject
+                        <button class="btn btn-danger" style="padding: 6px 12px; font-size: 11px;" onclick="rejectDeposit(${deposit.id})">
+                            <i class="fas fa-times"></i>
                         </button>
-                    </div>
-                ` : '<span style="color: #94a3b8;">-</span>'}
-            </td>
+                    ` : '-'}
+                </td>
+            </tr>
         `;
-        tbody.appendChild(row);
-    });
+    }).join('');
 }
 
-function approveWithdrawal(id) {
-    const withdrawal = withdrawals.find(w => w.id === id);
-    if (!withdrawal) return;
-
-    const user = users.find(u => u.id === withdrawal.userId);
-    if (!user) {
-        showNotification('User not found', 'error');
+// Load withdrawals
+function loadWithdrawals() {
+    const withdrawals = JSON.parse(localStorage.getItem('withdrawals') || '[]');
+    const tableBody = document.getElementById('withdrawalsTable');
+    
+    if (withdrawals.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px; color: #94a3b8;">No withdrawals found</td></tr>';
         return;
     }
-
-    // Update withdrawal status
-    withdrawal.status = 'completed';
-    withdrawal.completedAt = new Date().toISOString();
-
-    // Deduct from user balance
-    user.balance = (user.balance || 0) - withdrawal.amount;
-
-    saveWithdrawals();
-    saveUsers();
-    loadWithdrawals();
-    loadDashboard();
-
-    showNotification(`Withdrawal of ₹${withdrawal.amount.toLocaleString()} approved for ${user.username}`, 'success');
+    
+    tableBody.innerHTML = withdrawals.map(withdrawal => {
+        const date = new Date(withdrawal.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        let detailsText = withdrawal.details;
+        
+        if (typeof withdrawal.details === 'object') {
+            detailsText = Object.values(withdrawal.details).join(', ');
+        }
+        
+        return `
+            <tr>
+                <td>#${withdrawal.id.toString().slice(-6)}</td>
+                <td>${withdrawal.username}</td>
+                <td>${withdrawal.method}</td>
+                <td>₹${withdrawal.amount}</td>
+                <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${detailsText}</td>
+                <td><span class="status-badge ${withdrawal.status}">${withdrawal.status}</span></td>
+                <td>
+                    ${withdrawal.status === 'pending' ? `
+                        <button class="btn btn-success" style="padding: 6px 12px; font-size: 11px;" onclick="approveWithdrawal(${withdrawal.id})">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn btn-danger" style="padding: 6px 12px; font-size: 11px;" onclick="rejectWithdrawal(${withdrawal.id})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    ` : '-'}
+                </td>
+            </tr>
+        `;
+    }).join('');
 }
 
+// Approve withdrawal
+function approveWithdrawal(id) {
+    const withdrawals = JSON.parse(localStorage.getItem('withdrawals') || '[]');
+    const withdrawalIndex = withdrawals.findIndex(w => w.id === id);
+    
+    if (withdrawalIndex !== -1) {
+        const withdrawal = withdrawals[withdrawalIndex];
+        withdrawal.status = 'completed';
+        withdrawals[withdrawalIndex] = withdrawal;
+        localStorage.setItem('withdrawals', JSON.stringify(withdrawals));
+        
+        // Deduct from user balance
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const userIndex = users.findIndex(u => u.id === withdrawal.userId);
+        
+        if (userIndex !== -1) {
+            users[userIndex].balance = (users[userIndex].balance || 0) - withdrawal.amount;
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+        
+        alert('Withdrawal approved successfully!');
+        loadWithdrawals();
+        loadDashboardStats();
+    }
+}
+
+// Reject withdrawal
 function rejectWithdrawal(id) {
-    if (!confirm('Are you sure you want to reject this withdrawal?')) return;
-
-    const withdrawal = withdrawals.find(w => w.id === id);
-    if (!withdrawal) return;
-
-    withdrawal.status = 'rejected';
-    withdrawal.completedAt = new Date().toISOString();
-
-    saveWithdrawals();
-    loadWithdrawals();
-    loadDashboard();
-
-    showNotification(`Withdrawal rejected`, 'warning');
+    const withdrawals = JSON.parse(localStorage.getItem('withdrawals') || '[]');
+    const withdrawalIndex = withdrawals.findIndex(w => w.id === id);
+    
+    if (withdrawalIndex !== -1) {
+        withdrawals[withdrawalIndex].status = 'rejected';
+        localStorage.setItem('withdrawals', JSON.stringify(withdrawals));
+        
+        alert('Withdrawal rejected successfully!');
+        loadWithdrawals();
+    }
 }
 
+// Filter withdrawals
 function filterWithdrawals() {
     const searchTerm = document.getElementById('searchWithdrawals').value.toLowerCase();
     const statusFilter = document.getElementById('withdrawalStatusFilter').value;
-    const rows = document.querySelectorAll('#withdrawalsTable tr');
     
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        const statusMatch = statusFilter === 'all' || text.includes(statusFilter);
-        const searchMatch = text.includes(searchTerm);
-        row.style.display = statusMatch && searchMatch ? '' : 'none';
-    });
+    let withdrawals = JSON.parse(localStorage.getItem('withdrawals') || '[]');
+    
+    if (searchTerm) {
+        withdrawals = withdrawals.filter(withdrawal => 
+            withdrawal.username.toLowerCase().includes(searchTerm) ||
+            withdrawal.method.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    if (statusFilter !== 'all') {
+        withdrawals = withdrawals.filter(withdrawal => withdrawal.status === statusFilter);
+    }
+    
+    const tableBody = document.getElementById('withdrawalsTable');
+    
+    if (withdrawals.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px; color: #94a3b8;">No withdrawals found</td></tr>';
+        return;
+    }
+    
+    tableBody.innerHTML = withdrawals.map(withdrawal => {
+        const date = new Date(withdrawal.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        let detailsText = withdrawal.details;
+        
+        if (typeof withdrawal.details === 'object') {
+            detailsText = Object.values(withdrawal.details).join(', ');
+        }
+        
+        return `
+            <tr>
+                <td>#${withdrawal.id.toString().slice(-6)}</td>
+                <td>${withdrawal.username}</td>
+                <td>${withdrawal.method}</td>
+                <td>₹${withdrawal.amount}</td>
+                <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${detailsText}</td>
+                <td><span class="status-badge ${withdrawal.status}">${withdrawal.status}</span></td>
+                <td>
+                    ${withdrawal.status === 'pending' ? `
+                        <button class="btn btn-success" style="padding: 6px 12px; font-size: 11px;" onclick="approveWithdrawal(${withdrawal.id})">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn btn-danger" style="padding: 6px 12px; font-size: 11px;" onclick="rejectWithdrawal(${withdrawal.id})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    ` : '-'}
+                </td>
+            </tr>
+        `;
+    }).join('');
 }
 
-// Games & Win Ratio
+// Load games
 function loadGames() {
-    const tbody = document.getElementById('gamesTable');
-    tbody.innerHTML = '';
-
-    games.forEach(game => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td><strong>${game.name}</strong></td>
-            <td><span class="badge badge-primary">${game.category}</span></td>
+    const games = [
+        { id: 1, name: 'Dragon Tiger', category: 'Live Casino', provider: 'Evolution', minBet: 100, maxBet: 50000, winRatio: 95, status: 'active' },
+        { id: 2, name: 'Roulette', category: 'Table Games', provider: 'Evolution', minBet: 50, maxBet: 100000, winRatio: 97, status: 'active' },
+        { id: 3, name: 'Blackjack', category: 'Table Games', provider: 'Pragmatic', minBet: 100, maxBet: 75000, winRatio: 99, status: 'active' },
+        { id: 4, name: 'Sweet Bonanza', category: 'Slots', provider: 'Pragmatic', minBet: 10, maxBet: 25000, winRatio: 96, status: 'active' },
+        { id: 5, name: 'Andar Bahar', category: 'Live Casino', provider: 'Evolution', minBet: 50, maxBet: 100000, winRatio: 95, status: 'active' },
+        { id: 6, name: 'Baccarat', category: 'Table Games', provider: 'Evolution', minBet: 100, maxBet: 50000, winRatio: 98, status: 'active' },
+        { id: 7, name: 'Starlight Princess', category: 'Slots', provider: 'Pragmatic', minBet: 10, maxBet: 20000, winRatio: 95, status: 'active' },
+        { id: 8, name: 'Cricket Betting', category: 'Sports', provider: 'Sportsbook', minBet: 100, maxBet: 200000, winRatio: 92, status: 'active' },
+        { id: 9, name: 'Football Betting', category: 'Sports', provider: 'Sportsbook', minBet: 100, maxBet: 150000, winRatio: 93, status: 'active' },
+        { id: 10, name: 'Teen Patti', category: 'Live Casino', provider: 'Evolution', minBet: 50, maxBet: 100000, winRatio: 95, status: 'active' }
+    ];
+    
+    const tableBody = document.getElementById('gamesTable');
+    
+    tableBody.innerHTML = games.map(game => `
+        <tr>
+            <td>${game.name}</td>
+            <td>${game.category}</td>
             <td>${game.provider}</td>
-            <td>₹${game.minBet.toLocaleString()}</td>
-            <td>₹${game.maxBet.toLocaleString()}</td>
+            <td>₹${game.minBet}</td>
+            <td>₹${game.maxBet}</td>
             <td>
                 <div class="win-ratio-container">
                     <div class="win-ratio-header">
-                        <input type="range" min="0" max="100" value="${game.winRatio}" 
-                               onchange="updateWinRatio(${game.id}, this.value)">
-                        <span class="win-ratio-value" id="winRatio-${game.id}">${game.winRatio}%</span>
+                        <span class="win-ratio-value">${game.winRatio}%</span>
+                        <i class="fas fa-sliders-h" style="color: #94a3b8; cursor: pointer;"></i>
                     </div>
+                    <input type="range" min="0" max="100" value="${game.winRatio}" onchange="updateWinRatio(${game.id}, this.value)">
                 </div>
             </td>
             <td><span class="status-badge ${game.status}">${game.status}</span></td>
             <td>
-                <div class="action-buttons">
-                    <button class="action-btn ${game.status === 'active' ? 'delete' : 'approve'}" onclick="toggleGameStatus(${game.id})">
-                        <i class="fas ${game.status === 'active' ? 'fa-pause' : 'fa-play'}"></i>
-                    </button>
-                </div>
+                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11px;" onclick="editGame(${game.id})">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn ${game.status === 'active' ? 'btn-danger' : 'btn-success'}" style="padding: 6px 12px; font-size: 11px;" onclick="toggleGameStatus(${game.id})">
+                    <i class="fas ${game.status === 'active' ? 'fa-pause' : 'fa-play'}"></i>
+                </button>
             </td>
-        `;
-        tbody.appendChild(row);
-    });
+        </tr>
+    `).join('');
 }
 
+// Update win ratio
 function updateWinRatio(gameId, value) {
-    const game = games.find(g => g.id === gameId);
-    if (!game) return;
-
-    game.winRatio = parseInt(value);
-    document.getElementById(`winRatio-${gameId}`).textContent = value + '%';
-    saveGames();
-
-    showNotification(`Win ratio updated for ${game.name}`, 'success');
+    alert(`Win ratio for game ${gameId} updated to ${value}%`);
 }
 
-function toggleGameStatus(gameId) {
-    const game = games.find(g => g.id === gameId);
-    if (!game) return;
-
-    game.status = game.status === 'active' ? 'inactive' : 'active';
-    saveGames();
-    loadGames();
-
-    showNotification(`Game ${game.name} ${game.status}`, 'info');
+// Edit game
+function editGame(id) {
+    alert(`Edit game ${id} - This feature would open a modal to edit game details`);
 }
 
-// Payment Settings
+// Toggle game status
+function toggleGameStatus(id) {
+    alert(`Toggle status for game ${id} - This feature would activate/deactivate the game`);
+}
+
+// Load payment settings
 function loadPaymentSettings() {
-    document.getElementById('upiEnabled').checked = paymentSettings.upi.enabled;
-    document.getElementById('upiQrUrl').value = paymentSettings.upi.qrUrl || '';
-    document.getElementById('upiId').value = paymentSettings.upi.upiId || '';
-
-    document.getElementById('bankEnabled').checked = paymentSettings.bank.enabled;
-    document.getElementById('bankHolderName').value = paymentSettings.bank.holderName || '';
-    document.getElementById('bankAccountNumber').value = paymentSettings.bank.accountNumber || '';
-    document.getElementById('bankIfsc').value = paymentSettings.bank.ifsc || '';
-    document.getElementById('bankName').value = paymentSettings.bank.bankName || '';
-
-    document.getElementById('usdtEnabled').checked = paymentSettings.usdt.enabled;
-    document.getElementById('usdtQrUrl').value = paymentSettings.usdt.qrUrl || '';
-    document.getElementById('usdtWalletAddress').value = paymentSettings.usdt.walletAddress || '';
+    const settings = JSON.parse(localStorage.getItem('paymentSettings') || '{}');
+    
+    document.getElementById('upiQrUrl').value = settings.upiQrUrl || '';
+    document.getElementById('upiId').value = settings.upiId || '';
+    document.getElementById('upiEnabled').checked = settings.upiEnabled !== false;
+    
+    document.getElementById('bankHolderName').value = settings.bankHolderName || '';
+    document.getElementById('bankAccountNumber').value = settings.bankAccountNumber || '';
+    document.getElementById('bankIfsc').value = settings.bankIfsc || '';
+    document.getElementById('bankName').value = settings.bankName || '';
+    document.getElementById('bankEnabled').checked = settings.bankEnabled !== false;
+    
+    document.getElementById('usdtQrUrl').value = settings.usdtQrUrl || '';
+    document.getElementById('usdtWalletAddress').value = settings.usdtWalletAddress || '';
+    document.getElementById('usdtEnabled').checked = settings.usdtEnabled !== false;
 }
 
+// Save payment settings
 function savePaymentSettings() {
-    paymentSettings.upi = {
-        enabled: document.getElementById('upiEnabled').checked,
-        qrUrl: document.getElementById('upiQrUrl').value,
-        upiId: document.getElementById('upiId').value
+    const settings = {
+        upiQrUrl: document.getElementById('upiQrUrl').value,
+        upiId: document.getElementById('upiId').value,
+        upiEnabled: document.getElementById('upiEnabled').checked,
+        
+        bankHolderName: document.getElementById('bankHolderName').value,
+        bankAccountNumber: document.getElementById('bankAccountNumber').value,
+        bankIfsc: document.getElementById('bankIfsc').value,
+        bankName: document.getElementById('bankName').value,
+        bankEnabled: document.getElementById('bankEnabled').checked,
+        
+        usdtQrUrl: document.getElementById('usdtQrUrl').value,
+        usdtWalletAddress: document.getElementById('usdtWalletAddress').value,
+        usdtEnabled: document.getElementById('usdtEnabled').checked
     };
-
-    paymentSettings.bank = {
-        enabled: document.getElementById('bankEnabled').checked,
-        holderName: document.getElementById('bankHolderName').value,
-        accountNumber: document.getElementById('bankAccountNumber').value,
-        ifsc: document.getElementById('bankIfsc').value,
-        bankName: document.getElementById('bankName').value
-    };
-
-    paymentSettings.usdt = {
-        enabled: document.getElementById('usdtEnabled').checked,
-        qrUrl: document.getElementById('usdtQrUrl').value,
-        walletAddress: document.getElementById('usdtWalletAddress').value
-    };
-
-    localStorage.setItem('ravan365_payment_settings', JSON.stringify(paymentSettings));
-    showNotification('Payment settings saved successfully!', 'success');
+    
+    localStorage.setItem('paymentSettings', JSON.stringify(settings));
+    alert('Payment settings saved successfully!');
 }
 
-// Platform Settings
-function loadPlatformSettings() {
-    document.getElementById('platformName').value = platformSettings.platformName || 'Ravan365';
-    document.getElementById('whatsappNumber').value = platformSettings.whatsappNumber || '1234567890';
-    document.getElementById('minDeposit').value = platformSettings.minDeposit || 100;
-    document.getElementById('maxWithdraw').value = platformSettings.maxWithdraw || 50000;
-    document.getElementById('withdrawalTime').value = platformSettings.withdrawalTime || 24;
+// Load settings
+function loadSettings() {
+    const settings = JSON.parse(localStorage.getItem('platformSettings') || '{}');
+    
+    document.getElementById('platformName').value = settings.platformName || 'Ravan365';
+    document.getElementById('whatsappNumber').value = settings.whatsappNumber || '';
+    document.getElementById('minDeposit').value = settings.minDeposit || 100;
+    document.getElementById('maxWithdraw').value = settings.maxWithdraw || 50000;
+    document.getElementById('withdrawalTime').value = settings.withdrawalTime || 24;
 }
 
+// Save settings
 function saveSettings() {
-    platformSettings.platformName = document.getElementById('platformName').value;
-    platformSettings.whatsappNumber = document.getElementById('whatsappNumber').value;
-    platformSettings.minDeposit = parseInt(document.getElementById('minDeposit').value);
-    platformSettings.maxWithdraw = parseInt(document.getElementById('maxWithdraw').value);
-    platformSettings.withdrawalTime = parseInt(document.getElementById('withdrawalTime').value);
-
-    localStorage.setItem('ravan365_platform_settings', JSON.stringify(platformSettings));
-    showNotification('Platform settings saved successfully!', 'success');
+    const settings = {
+        platformName: document.getElementById('platformName').value,
+        whatsappNumber: document.getElementById('whatsappNumber').value,
+        minDeposit: parseInt(document.getElementById('minDeposit').value),
+        maxWithdraw: parseInt(document.getElementById('maxWithdraw').value),
+        withdrawalTime: parseInt(document.getElementById('withdrawalTime').value)
+    };
+    
+    localStorage.setItem('platformSettings', JSON.stringify(settings));
+    localStorage.setItem('whatsappNumber', settings.whatsappNumber);
+    
+    alert('Platform settings saved successfully!');
 }
 
-// Notification Count
+// Update notification count
 function updateNotificationCount() {
-    const count = registrations.length + deposits.filter(d => d.status === 'pending').length + withdrawals.filter(w => w.status === 'pending').length;
+    const deposits = JSON.parse(localStorage.getItem('deposits') || '[]');
+    const withdrawals = JSON.parse(localStorage.getItem('withdrawals') || '[]');
+    const registrations = JSON.parse(localStorage.getItem('registrations') || '[]');
+    
+    const count = deposits.filter(d => d.status === 'pending').length +
+                  withdrawals.filter(w => w.status === 'pending').length +
+                  registrations.length;
+    
     document.getElementById('notificationCount').textContent = count;
-}
-
-// Save functions
-function saveUsers() {
-    localStorage.setItem('ravan365_users', JSON.stringify(users));
-}
-
-function saveDeposits() {
-    localStorage.setItem('ravan365_deposits', JSON.stringify(deposits));
-}
-
-function saveWithdrawals() {
-    localStorage.setItem('ravan365_withdrawals', JSON.stringify(withdrawals));
-}
-
-function saveGames() {
-    localStorage.setItem('ravan365_games', JSON.stringify(games));
-}
-
-function saveRegistrations() {
-    localStorage.setItem('ravan365_pending_registrations', JSON.stringify(registrations));
 }
 
 // Logout
@@ -702,64 +786,4 @@ function logout() {
         sessionStorage.clear();
         window.location.href = 'index.html';
     }
-}
-
-// Notification System
-function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    
-    let icon = '';
-    if (type === 'success') icon = '<i class="fas fa-check-circle" style="color: #10b981; font-size: 20px;"></i>';
-    else if (type === 'error') icon = '<i class="fas fa-exclamation-circle" style="color: #ef4444; font-size: 20px;"></i>';
-    else if (type === 'warning') icon = '<i class="fas fa-exclamation-triangle" style="color: #f59e0b; font-size: 20px;"></i>';
-    else icon = '<i class="fas fa-info-circle" style="color: #00d9ff; font-size: 20px;"></i>';
-
-    notification.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px;">
-            ${icon}
-            <span style="font-size: 14px; font-weight: 500;">${message}</span>
-        </div>
-    `;
-    
-    document.body.appendChild(notification);
-
-    setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => {
-            if (document.body.contains(notification)) {
-                document.body.removeChild(notification);
-            }
-        }, 300);
-    }, 4000);
-}
-
-// Add slideOut animation
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideOut {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(style);
-
-// Initialize localStorage if empty
-if (!localStorage.getItem('ravan365_users')) {
-    localStorage.setItem('ravan365_users', '[]');
-}
-if (!localStorage.getItem('ravan365_deposits')) {
-    localStorage.setItem('ravan365_deposits', '[]');
-}
-if (!localStorage.getItem('ravan365_withdrawals')) {
-    localStorage.setItem('ravan365_withdrawals', '[]');
-}
-if (!localStorage.getItem('ravan365_pending_registrations')) {
-    localStorage.setItem('ravan365_pending_registrations', '[]');
 }
