@@ -2,32 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ravan365 - Admin Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #05070f;
-            color: #fff;
-            min-height: 100vh;
-        }
-
         .admin-layout {
             display: flex;
             min-height: 100vh;
         }
 
         .sidebar {
-            width: 280px;
+            width: 260px;
             background: linear-gradient(180deg, #0d1333, #090d1f);
             border-right: 1px solid #24306a;
             position: fixed;
@@ -35,19 +22,24 @@
             overflow-y: auto;
             z-index: 1000;
             transition: all 0.3s ease;
+            left: 0;
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
         }
 
         .sidebar-header {
-            padding: 24px;
+            padding: 20px;
             border-bottom: 1px solid #24306a;
             text-align: center;
         }
 
         .sidebar-logo {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
-            margin: 0 auto 15px;
+            margin: 0 auto 12px;
             background: linear-gradient(160deg, #0d1333, #090d1f);
             display: flex;
             justify-content: center;
@@ -56,14 +48,14 @@
         }
 
         .sidebar-logo img {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             object-fit: cover;
         }
 
         .sidebar-brand {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 800;
             background: linear-gradient(90deg, #00d9ff, #ff2b5c);
             -webkit-background-clip: text;
@@ -71,18 +63,19 @@
         }
 
         .nav-menu {
-            padding: 20px 0;
+            padding: 15px 0;
         }
 
         .nav-item {
-            padding: 15px 24px;
+            padding: 12px 20px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
             color: #94a3b8;
             border-left: 3px solid transparent;
+            font-size: 14px;
         }
 
         .nav-item:hover,
@@ -93,12 +86,12 @@
         }
 
         .nav-item i {
-            width: 20px;
+            width: 18px;
             text-align: center;
         }
 
         .sidebar-footer {
-            padding: 20px;
+            padding: 15px;
             border-top: 1px solid #24306a;
             position: absolute;
             bottom: 0;
@@ -107,51 +100,53 @@
 
         .main-content {
             flex: 1;
-            margin-left: 280px;
-            padding: 30px;
+            margin-left: 260px;
+            padding: 20px;
         }
 
         .top-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
             border-bottom: 1px solid #24306a;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .header-left h1 {
-            font-size: 28px;
+            font-size: 22px;
             margin-bottom: 5px;
         }
 
         .header-left p {
             color: #94a3b8;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .header-right {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
         }
 
         .notification-bell {
             position: relative;
             cursor: pointer;
-            font-size: 24px;
+            font-size: 22px;
             color: #94a3b8;
         }
 
         .notification-badge {
             position: absolute;
-            top: -8px;
-            right: -8px;
+            top: -6px;
+            right: -6px;
             background: #ff2b5c;
             color: #fff;
             font-size: 10px;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
@@ -161,31 +156,40 @@
         .admin-profile {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 8px 16px;
+            gap: 10px;
+            padding: 6px 12px;
             background: rgba(0, 217, 255, 0.1);
-            border-radius: 10px;
+            border-radius: 8px;
             border: 1px solid #24306a;
         }
 
         .admin-profile img {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             object-fit: cover;
         }
 
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
         }
 
         .stat-card {
             background: linear-gradient(160deg, rgba(13, 19, 51, 0.9), rgba(9, 13, 31, 0.9));
-            border-radius: 16px;
-            padding: 24px;
+            border-radius: 12px;
+            padding: 20px;
             border: 1px solid #24306a;
             transition: all 0.3s ease;
             position: relative;
@@ -197,25 +201,25 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 4px;
+            width: 3px;
             height: 100%;
             background: linear-gradient(180deg, #00d9ff, #ff2b5c);
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(0, 217, 255, 0.2);
         }
 
         .stat-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 24px;
-            margin-bottom: 15px;
+            font-size: 22px;
+            margin-bottom: 12px;
         }
 
         .stat-icon.blue {
@@ -239,15 +243,15 @@
         }
 
         .stat-value {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
             margin-bottom: 5px;
         }
 
         .stat-label {
             color: #94a3b8;
-            font-size: 14px;
-            margin-bottom: 10px;
+            font-size: 12px;
+            margin-bottom: 8px;
         }
 
         .content-section {
@@ -264,97 +268,25 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .section-title {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 600;
-        }
-
-        .table-card {
-            background: linear-gradient(160deg, rgba(13, 19, 51, 0.9), rgba(9, 13, 31, 0.9));
-            border-radius: 16px;
-            padding: 24px;
-            border: 1px solid #24306a;
-            margin-bottom: 20px;
-        }
-
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .search-box {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(0, 217, 255, 0.05);
-            padding: 10px 15px;
-            border-radius: 10px;
-            border: 1px solid #24306a;
-        }
-
-        .search-box input {
-            background: transparent;
-            border: none;
-            color: #fff;
-            outline: none;
-            font-size: 14px;
-            width: 200px;
-        }
-
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .status-badge.active {
-            background: rgba(16, 185, 129, 0.2);
-            color: #10b981;
-        }
-
-        .status-badge.pending {
-            background: rgba(245, 158, 11, 0.2);
-            color: #f59e0b;
-        }
-
-        .status-badge.inactive {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-        }
-
-        .status-badge.completed {
-            background: rgba(16, 185, 129, 0.2);
-            color: #10b981;
-        }
-
-        .status-badge.rejected {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-        }
-
-        .status-badge.banned {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
         }
 
         .payment-settings-grid {
             display: grid;
-            gap: 20px;
+            gap: 15px;
         }
 
         .payment-method-card {
             background: rgba(0, 217, 255, 0.05);
             border: 2px solid #24306a;
             border-radius: 12px;
-            padding: 24px;
+            padding: 20px;
             transition: all 0.3s ease;
         }
 
@@ -366,63 +298,75 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .payment-method-title {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 18px;
+            gap: 10px;
+            font-size: 16px;
             font-weight: 600;
         }
 
         .payment-method-icon {
-            font-size: 24px;
+            font-size: 22px;
             color: #00d9ff;
         }
 
-        .payment-status {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-        }
-
         .win-ratio-container {
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
         .win-ratio-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .win-ratio-value {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
             color: #00d9ff;
         }
 
         input[type="range"] {
             width: 100%;
-            height: 8px;
+            height: 6px;
             background: #24306a;
-            border-radius: 4px;
+            border-radius: 3px;
             outline: none;
             -webkit-appearance: none;
         }
 
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             background: #00d9ff;
             border-radius: 50%;
             cursor: pointer;
         }
 
+        /* Overlay for sidebar */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* Responsive */
         @media (max-width: 1024px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -435,15 +379,24 @@
             .main-content {
                 margin-left: 0;
             }
+
+            .menu-toggle {
+                display: block;
+            }
         }
 
         @media (max-width: 768px) {
+            .main-content {
+                padding: 15px;
+            }
+
             .stats-grid {
                 grid-template-columns: 1fr;
             }
 
             .table-card {
                 overflow-x: auto;
+                padding: 15px;
             }
 
             .data-table {
@@ -454,31 +407,41 @@
                 flex-direction: column;
                 align-items: stretch;
             }
-        }
 
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 24px;
-            cursor: pointer;
-        }
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
 
-        @media (max-width: 1024px) {
-            .menu-toggle {
-                display: block;
+            .header-right {
+                gap: 10px;
+            }
+
+            .admin-profile h4 {
+                display: none;
             }
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
+        @media (max-width: 576px) {
+            .sidebar {
+                width: 100%;
+                max-width: 280px;
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+
+            .top-header {
+                margin-bottom: 20px;
+            }
+
+            .header-left h1 {
+                font-size: 18px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-value {
+                font-size: 24px;
             }
         }
     </style>
@@ -492,13 +455,15 @@
     </script>
 
     <div class="admin-layout">
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+        
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-logo">
                     <img src="https://uploads.onecompiler.io/447v8k97f/44a8v4r6k/31lUzDGZTUL._AC_UF894,1000_QL80_.jpg" alt="Ravan365">
                 </div>
                 <div class="sidebar-brand">Ravan365</div>
-                <p style="color: #94a3b8; font-size: 12px; margin-top: 5px;">Admin Panel</p>
+                <p style="color: #94a3b8; font-size: 11px; margin-top: 5px;">Admin Panel</p>
             </div>
 
             <div class="nav-menu">
@@ -560,8 +525,8 @@
                     <div class="admin-profile">
                         <img src="https://ui-avatars.com/api/?name=Admin&background=00d9ff&color=fff" alt="Admin">
                         <div>
-                            <h4 style="font-size: 14px; margin-bottom: 2px;">Admin</h4>
-                            <p style="font-size: 12px; color: #94a3b8;">Super Admin</p>
+                            <h4 style="font-size: 13px; margin-bottom: 2px;">Admin</h4>
+                            <p style="font-size: 11px; color: #94a3b8;">Super Admin</p>
                         </div>
                     </div>
                 </div>
@@ -604,10 +569,10 @@
 
                 <div class="table-card">
                     <div class="table-header">
-                        <h3 style="font-size: 18px;">Recent Activity</h3>
+                        <h3 style="font-size: 16px;">Recent Activity</h3>
                     </div>
                     <div id="recentActivity">
-                        <p style="color: #94a3b8; text-align: center; padding: 40px;">No recent activity</p>
+                        <p style="color: #94a3b8; text-align: center; padding: 30px;">No recent activity</p>
                     </div>
                 </div>
             </div>
@@ -624,7 +589,7 @@
                     <div class="table-header">
                         <div class="search-box">
                             <i class="fas fa-search" style="color: #94a3b8;"></i>
-                            <input type="text" placeholder="Search registrations..." id="searchRegistrations" onkeyup="filterRegistrations()">
+                            <input type="text" placeholder="Search..." id="searchRegistrations" onkeyup="filterRegistrations()">
                         </div>
                     </div>
                     <table class="data-table">
@@ -654,7 +619,7 @@
                             <i class="fas fa-search" style="color: #94a3b8;"></i>
                             <input type="text" placeholder="Search users..." id="searchUsers" onkeyup="filterUsers()">
                         </div>
-                        <select style="width: auto; padding: 10px 15px;" id="userStatusFilter" onchange="filterUsers()">
+                        <select style="width: auto; padding: 8px 12px; font-size: 13px;" id="userStatusFilter" onchange="filterUsers()">
                             <option value="all">All Status</option>
                             <option value="active">Active</option>
                             <option value="banned">Banned</option>
@@ -688,7 +653,7 @@
                             <i class="fas fa-search" style="color: #94a3b8;"></i>
                             <input type="text" placeholder="Search deposits..." id="searchDeposits" onkeyup="filterDeposits()">
                         </div>
-                        <select style="width: auto; padding: 10px 15px;" id="depositStatusFilter" onchange="filterDeposits()">
+                        <select style="width: auto; padding: 8px 12px; font-size: 13px;" id="depositStatusFilter" onchange="filterDeposits()">
                             <option value="all">All Status</option>
                             <option value="pending">Pending</option>
                             <option value="completed">Completed</option>
@@ -701,8 +666,8 @@
                                 <th>ID</th>
                                 <th>User</th>
                                 <th>Method</th>
-                                <th>Amount (₹)</th>
-                                <th>Payment Details</th>
+                                <th>Amount</th>
+                                <th>Details</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -724,7 +689,7 @@
                             <i class="fas fa-search" style="color: #94a3b8;"></i>
                             <input type="text" placeholder="Search withdrawals..." id="searchWithdrawals" onkeyup="filterWithdrawals()">
                         </div>
-                        <select style="width: auto; padding: 10px 15px;" id="withdrawalStatusFilter" onchange="filterWithdrawals()">
+                        <select style="width: auto; padding: 8px 12px; font-size: 13px;" id="withdrawalStatusFilter" onchange="filterWithdrawals()">
                             <option value="all">All Status</option>
                             <option value="pending">Pending</option>
                             <option value="completed">Completed</option>
@@ -737,8 +702,8 @@
                                 <th>ID</th>
                                 <th>User</th>
                                 <th>Method</th>
-                                <th>Amount (₹)</th>
-                                <th>Payment Details</th>
+                                <th>Amount</th>
+                                <th>Details</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -761,8 +726,8 @@
                                 <th>Game</th>
                                 <th>Category</th>
                                 <th>Provider</th>
-                                <th>Min Bet (₹)</th>
-                                <th>Max Bet (₹)</th>
+                                <th>Min Bet</th>
+                                <th>Max Bet</th>
                                 <th>Win Ratio</th>
                                 <th>Status</th>
                                 <th>Actions</th>
@@ -790,7 +755,7 @@
                                 UPI Payment
                             </div>
                             <div class="payment-status">
-                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
                                     <input type="checkbox" id="upiEnabled" checked>
                                     <span>Enable UPI</span>
                                 </label>
@@ -813,7 +778,7 @@
                                 Bank Transfer
                             </div>
                             <div class="payment-status">
-                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
                                     <input type="checkbox" id="bankEnabled" checked>
                                     <span>Enable Bank Transfer</span>
                                 </label>
@@ -848,7 +813,7 @@
                                 USDT (TRC20)
                             </div>
                             <div class="payment-status">
-                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
                                     <input type="checkbox" id="usdtEnabled" checked>
                                     <span>Enable USDT</span>
                                 </label>
