@@ -1,16 +1,19 @@
-// Initialize particles
-function createParticles() {
-    const particlesContainer = document.getElementById('particles');
-    const particleCount = 50;
+// Show tab
+function showTab(tab) {
+    const loginSection = document.getElementById('loginSection');
+    const registerSection = document.getElementById('registerSection');
+    const tabs = document.querySelectorAll('.premium-tab');
 
-    for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.top = Math.random() * 100 + '%';
-        particle.style.animationDelay = Math.random() * 6 + 's';
-        particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
-        particlesContainer.appendChild(particle);
+    tabs.forEach(t => t.classList.remove('active'));
+
+    if (tab === 'login') {
+        loginSection.classList.add('active');
+        registerSection.classList.remove('active');
+        tabs[0].classList.add('active');
+    } else {
+        loginSection.classList.remove('active');
+        registerSection.classList.add('active');
+        tabs[1].classList.add('active');
     }
 }
 
@@ -127,7 +130,7 @@ function handleRegister(event) {
     localStorage.setItem('registrations', JSON.stringify(registrations));
     
     alert('Registration successful! Please login.');
-    switchTab('login');
+    showTab('login');
     
     // Clear form
     document.getElementById('registerForm').reset();
@@ -185,12 +188,12 @@ function checkRememberedUser() {
     const rememberedUser = localStorage.getItem('rememberedUser');
     if (rememberedUser) {
         document.getElementById('rememberMe').checked = true;
+        document.getElementById('loginUsername').value = rememberedUser;
     }
 }
 
-// Initialize
+// Initialize app
 document.addEventListener('DOMContentLoaded', function() {
-    createParticles();
     checkRememberedUser();
     
     // Add Enter key support for login
