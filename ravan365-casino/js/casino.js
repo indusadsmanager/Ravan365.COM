@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadPaymentMethods();
     loadTransactionHistory();
     loadBetHistory();
+    loadBankDetails();
     updateBalances();
 });
 
@@ -15,6 +16,7 @@ function loadUserData() {
     if (currentUser.username) {
         document.getElementById('profileUsername').textContent = currentUser.username;
         document.getElementById('profileEmail').textContent = currentUser.email || 'Not provided';
+        document.getElementById('profilePhone').textContent = currentUser.phone || 'Not provided';
     }
 }
 
@@ -25,27 +27,56 @@ function updateBalances() {
     const user = users.find(u => u.id === currentUser.id) || currentUser;
     
     const balance = user.balance || 0;
-    document.getElementById('userBalance').textContent = `₹${balance}`;
-    document.getElementById('depositBalance').textContent = `₹${balance}`;
-    document.getElementById('withdrawBalance').textContent = `₹${balance}`;
+    document.getElementById('userBalance').innerHTML = `<i class="fas fa-wallet"></i> ₹${balance}`;
     document.getElementById('profileBalance').textContent = `₹${balance}`;
+}
+
+// Show section
+function showSection(sectionId) {
+    // Hide all sections
+    document.querySelectorAll('.content-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    
+    // Remove active class from all nav items
+    document.querySelectorAll('.nav-link, .mobile-nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // Show selected section
+    document.getElementById(sectionId).classList.add('active');
+    
+    // Add active class to clicked nav items
+    document.querySelectorAll(`[onclick="showSection('${sectionId}')"]`).forEach(item => {
+        item.classList.add('active');
+    });
+    
+    // Update data when showing section
+    if (sectionId === 'transactions') {
+        loadTransactionHistory();
+    } else if (sectionId === 'bets') {
+        loadBetHistory();
+    } else if (sectionId === 'profile') {
+        loadUserData();
+        loadBankDetails();
+    }
 }
 
 // Load games
 function loadGames() {
     const games = [
-        { id: 1, name: 'Dragon Tiger', category: 'live', image: 'https://images.unsplash.com/photo-1511193311914-0346f16efe90?w=400&h=300&fit=crop', provider: 'Evolution' },
-        { id: 2, name: 'Roulette', category: 'table', image: 'https://images.unsplash.com/photo-1606167668584-78701c57f13d?w=400&h=300&fit=crop', provider: 'Evolution' },
-        { id: 3, name: 'Blackjack', category: 'table', image: 'https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=400&h=300&fit=crop', provider: 'Pragmatic' },
-        { id: 4, name: 'Sweet Bonanza', category: 'slots', image: 'https://images.unsplash.com/photo-1605870445919-838d190e8e1b?w=400&h=300&fit=crop', provider: 'Pragmatic' },
-        { id: 5, name: 'Andar Bahar', category: 'live', image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=300&fit=crop', provider: 'Evolution' },
-        { id: 6, name: 'Baccarat', category: 'table', image: 'https://images.unsplash.com/photo-1605806616949-1e87b487bc2a?w=400&h=300&fit=crop', provider: 'Evolution' },
-        { id: 7, name: 'Starlight Princess', category: 'slots', image: 'https://images.unsplash.com/photo-1606112210939-2db9e7d93745?w=400&h=300&fit=crop', provider: 'Pragmatic' },
-        { id: 8, name: 'Cricket Betting', category: 'sports', image: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=400&h=300&fit=crop', provider: 'Sportsbook' },
-        { id: 9, name: 'Football Betting', category: 'sports', image: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=400&h=300&fit=crop', provider: 'Sportsbook' },
-        { id: 10, name: 'Teen Patti', category: 'live', image: 'https://images.unsplash.com/photo-1511193311914-0346f16efe90?w=400&h=300&fit=crop', provider: 'Evolution' },
-        { id: 11, name: 'Gates of Olympus', category: 'slots', image: 'https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400&h=300&fit=crop', provider: 'Pragmatic' },
-        { id: 12, name: 'Poker', category: 'table', image: 'https://images.unsplash.com/photo-1511193311914-0346f16efe90?w=400&h=300&fit=crop', provider: 'Evolution' }
+        { id: 1, name: 'Dragon Tiger', category: 'live', image: 'https://images.unsplash.com/photo-1511193311914-0346f16efe90?w=400&h=250&fit=crop', provider: 'Evolution' },
+        { id: 2, name: 'Roulette', category: 'table', image: 'https://images.unsplash.com/photo-1606167668584-78701c57f13d?w=400&h=250&fit=crop', provider: 'Evolution' },
+        { id: 3, name: 'Blackjack', category: 'table', image: 'https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=400&h=250&fit=crop', provider: 'Pragmatic' },
+        { id: 4, name: 'Sweet Bonanza', category: 'slots', image: 'https://images.unsplash.com/photo-1605870445919-838d190e8e1b?w=400&h=250&fit=crop', provider: 'Pragmatic' },
+        { id: 5, name: 'Andar Bahar', category: 'live', image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=250&fit=crop', provider: 'Evolution' },
+        { id: 6, name: 'Baccarat', category: 'table', image: 'https://images.unsplash.com/photo-1605806616949-1e87b487bc2a?w=400&h=250&fit=crop', provider: 'Evolution' },
+        { id: 7, name: 'Starlight Princess', category: 'slots', image: 'https://images.unsplash.com/photo-1606112210939-2db9e7d93745?w=400&h=250&fit=crop', provider: 'Pragmatic' },
+        { id: 8, name: 'Cricket Betting', category: 'sports', image: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=400&h=250&fit=crop', provider: 'Sportsbook' },
+        { id: 9, name: 'Football Betting', category: 'sports', image: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=400&h=250&fit=crop', provider: 'Sportsbook' },
+        { id: 10, name: 'Teen Patti', category: 'live', image: 'https://images.unsplash.com/photo-1511193311914-0346f16efe90?w=400&h=250&fit=crop', provider: 'Evolution' },
+        { id: 11, name: 'Gates of Olympus', category: 'slots', image: 'https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400&h=250&fit=crop', provider: 'Pragmatic' },
+        { id: 12, name: 'Poker', category: 'table', image: 'https://images.unsplash.com/photo-1511193311914-0346f16efe90?w=400&h=250&fit=crop', provider: 'Evolution' }
     ];
     
     const gamesGrid = document.getElementById('gamesGrid');
@@ -55,12 +86,11 @@ function loadGames() {
         const gameCard = document.createElement('div');
         gameCard.className = 'game-card';
         gameCard.innerHTML = `
-            <img src="${game.image}" alt="${game.name}" class="game-image" onerror="this.src='https://via.placeholder.com/400x300/0d1333/00d9ff?text=${game.name}'">
+            <img src="${game.image}" alt="${game.name}" class="game-image" onerror="this.src='https://via.placeholder.com/400x250/0d1333/00d9ff?text=${game.name}'">
             <div class="game-info">
                 <h3 class="game-name">${game.name}</h3>
                 <p class="game-category">${game.category} • ${game.provider}</p>
             </div>
-            <div class="game-play-btn">PLAY NOW</div>
         `;
         gameCard.onclick = () => openGame(game);
         gamesGrid.appendChild(gameCard);
@@ -88,8 +118,7 @@ function filterGames(category) {
 
 // Open game
 function openGame(game) {
-    alert(`Opening ${game.name}...`);
-    // Here you would integrate with the game API
+    alert(`Opening ${game.name}...\n\nIn production, this would launch the actual game.`);
 }
 
 // Load payment methods
@@ -107,15 +136,9 @@ function loadPaymentMethods() {
         const methodCard = document.createElement('div');
         methodCard.className = 'payment-method-card';
         methodCard.innerHTML = `
-            <div class="payment-header">
-                <div class="payment-icon">
-                    <i class="${method.icon}"></i>
-                </div>
-                <div class="payment-info">
-                    <h3>${method.name}</h3>
-                    <p>${method.description}</p>
-                </div>
-            </div>
+            <i class="${method.icon}"></i>
+            <h4>${method.name}</h4>
+            <p>${method.description}</p>
         `;
         methodCard.onclick = () => selectDepositMethod(method.id);
         depositContainer.appendChild(methodCard);
@@ -133,15 +156,9 @@ function loadPaymentMethods() {
         const methodCard = document.createElement('div');
         methodCard.className = 'payment-method-card';
         methodCard.innerHTML = `
-            <div class="payment-header">
-                <div class="payment-icon">
-                    <i class="${method.icon}"></i>
-                </div>
-                <div class="payment-info">
-                    <h3>${method.name}</h3>
-                    <p>${method.description}</p>
-                </div>
-            </div>
+            <i class="${method.icon}"></i>
+            <h4>${method.name}</h4>
+            <p>${method.description}</p>
         `;
         methodCard.onclick = () => selectWithdrawMethod(method.id);
         withdrawContainer.appendChild(methodCard);
@@ -150,51 +167,39 @@ function loadPaymentMethods() {
 
 // Select deposit method
 function selectDepositMethod(method) {
-    // Remove selected class from all methods
-    document.querySelectorAll('#depositPaymentMethods .payment-method-card').forEach(card => {
-        card.classList.remove('selected');
-    });
-    
-    // Add selected class to clicked method
+    const methodCards = document.querySelectorAll('#depositPaymentMethods .payment-method-card');
+    methodCards.forEach(card => card.classList.remove('selected'));
     event.currentTarget.classList.add('selected');
     
-    // Hide all payment details
-    document.getElementById('upiPaymentDetails').style.display = 'none';
-    document.getElementById('bankPaymentDetails').style.display = 'none';
-    document.getElementById('usdtPaymentDetails').style.display = 'none';
+    document.getElementById('upiPaymentDetails').classList.remove('active');
+    document.getElementById('bankPaymentDetails').classList.remove('active');
+    document.getElementById('usdtPaymentDetails').classList.remove('active');
     
-    // Show selected payment details
     if (method === 'upi') {
-        document.getElementById('upiPaymentDetails').style.display = 'block';
+        document.getElementById('upiPaymentDetails').classList.add('active');
         loadUpiDetails();
     } else if (method === 'bank') {
-        document.getElementById('bankPaymentDetails').style.display = 'block';
+        document.getElementById('bankPaymentDetails').classList.add('active');
         loadBankDetails();
     } else if (method === 'usdt') {
-        document.getElementById('usdtPaymentDetails').style.display = 'block';
+        document.getElementById('usdtPaymentDetails').classList.add('active');
         loadUsdtDetails();
     }
 }
 
 // Select withdraw method
 function selectWithdrawMethod(method) {
-    // Remove selected class from all methods
-    document.querySelectorAll('#withdrawPaymentMethods .payment-method-card').forEach(card => {
-        card.classList.remove('selected');
-    });
-    
-    // Add selected class to clicked method
+    const methodCards = document.querySelectorAll('#withdrawPaymentMethods .payment-method-card');
+    methodCards.forEach(card => card.classList.remove('selected'));
     event.currentTarget.classList.add('selected');
     
-    // Hide all withdrawal details
-    document.getElementById('bankWithdrawDetails').style.display = 'none';
-    document.getElementById('usdtWithdrawDetails').style.display = 'none';
+    document.getElementById('bankWithdrawDetails').classList.remove('active');
+    document.getElementById('usdtWithdrawDetails').classList.remove('active');
     
-    // Show selected withdrawal details
     if (method === 'bank') {
-        document.getElementById('bankWithdrawDetails').style.display = 'block';
+        document.getElementById('bankWithdrawDetails').classList.add('active');
     } else if (method === 'usdt') {
-        document.getElementById('usdtWithdrawDetails').style.display = 'block';
+        document.getElementById('usdtWithdrawDetails').classList.add('active');
     }
 }
 
@@ -204,7 +209,6 @@ function loadUpiDetails() {
     document.getElementById('upiQrImage').src = settings.upiQrUrl || 'https://via.placeholder.com/200';
     const upiId = settings.upiId || 'example@upi';
     document.getElementById('upiIdDisplay').textContent = upiId;
-    document.getElementById('upiIdDisplayText').textContent = upiId;
 }
 
 function loadBankDetails() {
@@ -276,7 +280,6 @@ function submitDeposit(method) {
         createdAt: new Date().toISOString()
     };
     
-    // Save deposit
     const deposits = JSON.parse(localStorage.getItem('deposits') || '[]');
     deposits.push(deposit);
     localStorage.setItem('deposits', JSON.stringify(deposits));
@@ -302,6 +305,9 @@ function submitWithdrawal(method) {
             ifsc: document.getElementById('withdrawIfsc').value,
             bankName: document.getElementById('withdrawBankName').value
         };
+        
+        // Save bank details for future use
+        saveBankDetailsForWithdrawal(currentUser.id, details);
     } else if (method === 'usdt') {
         amount = document.getElementById('withdrawUsdtAmount').value;
         details = {
@@ -330,7 +336,6 @@ function submitWithdrawal(method) {
         createdAt: new Date().toISOString()
     };
     
-    // Save withdrawal
     const withdrawals = JSON.parse(localStorage.getItem('withdrawals') || '[]');
     withdrawals.push(withdrawal);
     localStorage.setItem('withdrawals', JSON.stringify(withdrawals));
@@ -340,13 +345,152 @@ function submitWithdrawal(method) {
     loadTransactionHistory();
 }
 
+// Save bank details for withdrawal
+function saveBankDetailsForWithdrawal(userId, details) {
+    const bankDetails = JSON.parse(localStorage.getItem('bankDetails') || '[]');
+    const existingIndex = bankDetails.findIndex(b => b.userId === userId);
+    
+    if (existingIndex === -1) {
+        bankDetails.push({
+            id: Date.now(),
+            userId,
+            ...details,
+            createdAt: new Date().toISOString()
+        });
+    } else {
+        bankDetails[existingIndex] = {
+            ...bankDetails[existingIndex],
+            ...details,
+            updatedAt: new Date().toISOString()
+        };
+    }
+    
+    localStorage.setItem('bankDetails', JSON.stringify(bankDetails));
+    loadBankDetails();
+}
+
+// Load bank details
+function loadBankDetails() {
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+    const bankDetails = JSON.parse(localStorage.getItem('bankDetails') || '[]');
+    const userBankDetails = bankDetails.filter(b => b.userId === currentUser.id);
+    
+    const bankDetailsList = document.getElementById('bankDetailsList');
+    bankDetailsList.innerHTML = '';
+    
+    if (userBankDetails.length === 0) {
+        bankDetailsList.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 30px;">No bank details saved</p>';
+        return;
+    }
+    
+    userBankDetails.forEach((bank, index) => {
+        const item = document.createElement('div');
+        item.className = 'bank-detail-item';
+        item.innerHTML = `
+            <div class="bank-detail-info">
+                <h4>${bank.holderName}</h4>
+                <p>${bank.bankName} - ${bank.accountNumber}</p>
+            </div>
+            <div class="bank-detail-actions">
+                <button class="action-btn btn-delete" onclick="deleteBankDetail(${bank.id})">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        `;
+        bankDetailsList.appendChild(item);
+    });
+}
+
+// Save bank details
+function saveBankDetails(event) {
+    event.preventDefault();
+    
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+    const details = {
+        holderName: document.getElementById('bankHolderName').value,
+        accountNumber: document.getElementById('bankAccountNumber').value,
+        ifsc: document.getElementById('bankIfsc').value,
+        bankName: document.getElementById('bankName').value
+    };
+    
+    const bankDetails = JSON.parse(localStorage.getItem('bankDetails') || '[]');
+    
+    bankDetails.push({
+        id: Date.now(),
+        userId: currentUser.id,
+        ...details,
+        createdAt: new Date().toISOString()
+    });
+    
+    localStorage.setItem('bankDetails', JSON.stringify(bankDetails));
+    
+    alert('Bank details saved successfully!');
+    closeModal('bank');
+    loadBankDetails();
+    
+    // Clear form
+    document.getElementById('bankHolderName').value = '';
+    document.getElementById('bankAccountNumber').value = '';
+    document.getElementById('bankIfsc').value = '';
+    document.getElementById('bankName').value = '';
+}
+
+// Delete bank detail
+function deleteBankDetail(id) {
+    if (confirm('Are you sure you want to delete this bank detail?')) {
+        const bankDetails = JSON.parse(localStorage.getItem('bankDetails') || '[]');
+        const updatedDetails = bankDetails.filter(b => b.id !== id);
+        localStorage.setItem('bankDetails', JSON.stringify(updatedDetails));
+        
+        alert('Bank detail deleted successfully!');
+        loadBankDetails();
+    }
+}
+
+// Change password
+function changePassword(event) {
+    event.preventDefault();
+    
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const userIndex = users.findIndex(u => u.id === currentUser.id);
+    
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+    
+    if (users[userIndex].password !== currentPassword) {
+        alert('Current password is incorrect!');
+        return;
+    }
+    
+    if (newPassword !== confirmNewPassword) {
+        alert('New passwords do not match!');
+        return;
+    }
+    
+    if (newPassword.length < 6) {
+        alert('Password must be at least 6 characters!');
+        return;
+    }
+    
+    users[userIndex].password = newPassword;
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    alert('Password changed successfully!');
+    
+    // Clear form
+    document.getElementById('currentPassword').value = '';
+    document.getElementById('newPassword').value = '';
+    document.getElementById('confirmNewPassword').value = '';
+}
+
 // Load transaction history
 function loadTransactionHistory() {
     const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
     const deposits = JSON.parse(localStorage.getItem('deposits') || '[]').filter(d => d.userId === currentUser.id);
     const withdrawals = JSON.parse(localStorage.getItem('withdrawals') || '[]').filter(w => w.userId === currentUser.id);
     
-    // Combine and sort by date
     const transactions = [...deposits, ...withdrawals].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     
     const transactionsList = document.getElementById('transactionsList');
@@ -389,7 +533,6 @@ function loadBetHistory() {
         return;
     }
     
-    // Sort by date (newest first)
     bets.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     
     bets.forEach(bet => {
@@ -505,15 +648,6 @@ function showHistoryTab(tab) {
     const tabs = document.querySelectorAll('.history-tab');
     tabs.forEach(t => t.classList.remove('active'));
     event.target.classList.add('active');
-    
-    document.getElementById('transactionsHistory').classList.remove('active');
-    document.getElementById('betsHistory').classList.remove('active');
-    
-    if (tab === 'transactions') {
-        document.getElementById('transactionsHistory').classList.add('active');
-    } else {
-        document.getElementById('betsHistory').classList.add('active');
-    }
 }
 
 // Modal functions
@@ -525,58 +659,10 @@ function closeModal(type) {
     document.getElementById(type + 'Modal').classList.remove('active');
 }
 
-// API Integration
-function openApiIntegration() {
-    openModal('api');
-}
-
-function connectApi() {
-    const provider = document.getElementById('apiProvider').value;
-    const apiKey = document.getElementById('apiKey').value;
-    const operatorId = document.getElementById('operatorId').value;
-    
-    if (!apiKey || !operatorId) {
-        alert('Please fill in all fields!');
-        return;
-    }
-    
-    // Save API configuration
-    const apiConfig = {
-        provider,
-        apiKey,
-        operatorId,
-        connectedAt: new Date().toISOString()
-    };
-    
-    localStorage.setItem('gameApiConfig', JSON.stringify(apiConfig));
-    
-    alert(`Successfully connected to ${provider} API! Games will be loaded shortly.`);
-    closeModal('api');
-    
-    // In a real implementation, this would load games from the API
-    alert('Demo mode: Games have been refreshed. In production, 1000+ games from the API would be loaded.');
-}
-
 // Mobile menu
 function toggleMobileMenu() {
-    // Toggle mobile nav visibility
     const mobileNav = document.querySelector('.mobile-nav');
     mobileNav.style.display = mobileNav.style.display === 'none' ? 'block' : 'none';
-}
-
-function scrollToSection(section) {
-    const element = document.getElementById(section);
-    if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-    }
-}
-
-// WhatsApp
-function openWhatsApp() {
-    const whatsappNumber = localStorage.getItem('whatsappNumber') || '919876543210';
-    const message = 'Hello, I need help with Ravan365 Casino.';
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
 }
 
 // Logout
