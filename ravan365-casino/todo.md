@@ -1,44 +1,35 @@
-# Ravan365 Casino Platform - Complete Rebuild
+# Casino Website - Complete Update Plan
 
-## Phase 1: Core Setup & Configuration
-- [x] Create project structure
-- [x] Set up INR currency system
-- [x] Configure admin-only access system
-- [x] Set up secure authentication
+## 1\. Login Page Updates
 
-## Phase 2: Enhanced Login System
-- [x] Remove Google/Facebook buttons
-- [x] Add "GET NEW ID" WhatsApp button
-- [x] Implement new customer registration
-- [x] Auto-send customer details to admin panel
-- [x] Secure admin access (only you)
+-   [x]  Stop auto-opening login interface
+-   [x]  Make login/register buttons open respective interfaces
+-   [x]  Update login.js for proper button handling
 
-## Phase 3: Admin Panel Features
-- [x] Payment method management (UPI QR, Bank Transfer, USDT)
-- [x] Editable payment details (IFSC, Account Holder, Account Number)
-- [x] Deposit approval/rejection system
-- [x] Withdrawal approval/rejection system
-- [x] User ban/unban functionality
-- [x] Game win ratio configuration per game
-- [x] New customer registration management
-- [x] View submitted payment details
+## 2\. Casino Page Updates
 
-## Phase 4: Casino Website Features
-- [x] Payment methods (UPI QR with auto-send, Bank Transfer form, USDT QR)
-- [x] Deposit request with auto-submit details to admin
-- [x] Withdrawal request system
-- [x] Game showcase with win ratios
-- [x] User dashboard with transactions
-- [x] WhatsApp "GET NEW ID" button
+-   [x]  Add separate transaction history page/section
+-   [x]  Add separate bet history page/section
+-   [x]  Add user password change functionality
+-   [x]  Add bank details save and delete for withdrawals
+-   [x]  Add wallet display with balance
+-   [x]  Update casino.js for new features
 
-## Phase 5: Payment Integration
-- [x] UPI QR code display
-- [x] Bank transfer form (auto-send to admin)
-- [x] USDT QR code with wallet address
-- [x] Admin can edit all payment methods
+## 3\. Admin Panel Updates
 
-## Phase 6: Testing & Deployment
-- [x] Test all payment flows
-- [x] Verify admin approvals
-- [x] Test registration flow
-- [x] Deploy to production
+-   [x]  Restrict API connection to admin only
+-   [x]  Add admin password change functionality
+-   [x]  Update admin-panel.js for security
+
+## 4\. Premium UI Enhancements
+
+-   [x]  Ensure all pages have premium UI
+-   [x]  Optimize games display size
+-   [x]  Make fully responsive for mobile and desktop
+
+## 5\. Final Testing & Deployment
+
+-   [x]  Create all updated files
+-   [x]  Create comprehensive README documentation
+-   [x]  Verify all files are complete and functional
+-   [x]  Package final deliverables
