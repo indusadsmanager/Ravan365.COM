@@ -1,284 +1,202 @@
-// Admin Credentials (ONLY YOU HAVE ACCESS)
-const ADMIN_CREDENTIALS = {
-    username: 'admin',
-    password: 'admin123'
-};
-
-// WhatsApp Number for "GET NEW ID"
-const WHATSAPP_NUMBER = '1234567890'; // Replace with your actual WhatsApp number
-
-// Initialize
-document.addEventListener('DOMContentLoaded', function() {
-    createParticles();
-    checkRememberMe();
-});
-
-// Create background particles
+// Initialize particles
 function createParticles() {
     const particlesContainer = document.getElementById('particles');
-    for (let i = 0; i < 50; i++) {
+    const particleCount = 50;
+
+    for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
         particle.style.left = Math.random() * 100 + '%';
         particle.style.top = Math.random() * 100 + '%';
         particle.style.animationDelay = Math.random() * 6 + 's';
-        particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
         particlesContainer.appendChild(particle);
     }
 }
 
-// Switch between Login and Register tabs
+// Tab switching
 function switchTab(tab) {
-    const tabs = document.querySelectorAll('.tab-btn');
-    const sections = document.querySelectorAll('.form-section');
+    const loginSection = document.getElementById('loginSection');
+    const registerSection = document.getElementById('registerSection');
+    const tabBtns = document.querySelectorAll('.tab-btn');
 
-    tabs.forEach(tabBtn => tabBtn.classList.remove('active'));
-    sections.forEach(section => section.classList.remove('active'));
+    tabBtns.forEach(btn => btn.classList.remove('active'));
 
     if (tab === 'login') {
-        tabs[0].classList.add('active');
-        document.getElementById('loginSection').classList.add('active');
+        loginSection.classList.add('active');
+        registerSection.classList.remove('active');
+        tabBtns[0].classList.add('active');
     } else {
-        tabs[1].classList.add('active');
-        document.getElementById('registerSection').classList.add('active');
+        loginSection.classList.remove('active');
+        registerSection.classList.add('active');
+        tabBtns[1].classList.add('active');
     }
-
-    // Hide any error messages
-    document.getElementById('loginError').style.display = 'none';
-    document.getElementById('registerError').style.display = 'none';
 }
 
-// Handle Login
+// Handle login
 function handleLogin(event) {
     event.preventDefault();
-
+    
     const username = document.getElementById('loginUsername').value;
     const password = document.getElementById('loginPassword').value;
     const rememberMe = document.getElementById('rememberMe').checked;
-
-    // Check Admin Login (ONLY YOU)
-    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+    
+    // Get users from localStorage
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    
+    // Check admin login
+    if (username === 'admin' && password === 'admin123') {
         sessionStorage.setItem('admin', 'true');
-        sessionStorage.setItem('role', 'admin');
-        sessionStorage.setItem('username', username);
-        
-        if (rememberMe) {
-            localStorage.setItem('rememberMe', 'true');
-        }
-        
-        showNotification('Welcome Admin! Redirecting to admin panel...', 'success');
-        setTimeout(() => {
-            window.location.href = 'admin-panel.html';
-        }, 1500);
+        alert('Admin login successful!');
+        window.location.href = 'admin.html';
         return;
     }
-
-    // Check User Login
-    const users = JSON.parse(localStorage.getItem('ravan365_users') || '[]');
+    
+    // Check user login
     const user = users.find(u => u.username === username && u.password === password);
-
+    
     if (user) {
-        // Check if user is banned
-        if (user.status === 'banned') {
-            showNotification('Your account has been banned. Please contact support.', 'error');
-            return;
-        }
-
         sessionStorage.setItem('user', 'true');
-        sessionStorage.setItem('role', 'user');
-        sessionStorage.setItem('username', username);
-        sessionStorage.setItem('userId', user.id);
+        sessionStorage.setItem('currentUser', JSON.stringify(user));
         
         if (rememberMe) {
-            localStorage.setItem('rememberMe', 'true');
+            localStorage.setItem('rememberedUser', username);
         }
         
-        showNotification('Welcome back! Redirecting to casino...', 'success');
-        setTimeout(() => {
-            window.location.href = 'casino.html';
-        }, 1500);
+        alert('Login successful!');
+        window.location.href = 'casino.html';
     } else {
-        document.getElementById('loginError').style.display = 'block';
-        showNotification('Invalid credentials. Please try again.', 'error');
+        showError('loginError', 'Invalid credentials. Please try again.');
     }
 }
 
-// Handle Registration
+// Handle registration
 function handleRegister(event) {
     event.preventDefault();
-
+    
     const username = document.getElementById('registerUsername').value;
     const email = document.getElementById('registerEmail').value;
     const phone = document.getElementById('registerPhone').value;
     const password = document.getElementById('registerPassword').value;
     const confirmPassword = document.getElementById('registerConfirmPassword').value;
-
+    
     // Validation
     if (password !== confirmPassword) {
-        document.getElementById('registerError').textContent = 'Passwords do not match!';
-        document.getElementById('registerError').style.display = 'block';
+        showError('registerError', 'Passwords do not match!');
         return;
     }
-
+    
     if (password.length < 6) {
-        document.getElementById('registerError').textContent = 'Password must be at least 6 characters!';
-        document.getElementById('registerError').style.display = 'block';
+        showError('registerError', 'Password must be at least 6 characters!');
         return;
     }
-
+    
+    // Get existing users
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    
     // Check if username already exists
-    const users = JSON.parse(localStorage.getItem('ravan365_users') || '[]');
     if (users.find(u => u.username === username)) {
-        document.getElementById('registerError').textContent = 'Username already exists!';
-        document.getElementById('registerError').style.display = 'block';
+        showError('registerError', 'Username already exists!');
         return;
     }
-
+    
+    // Check if email already exists
+    if (users.find(u => u.email === email)) {
+        showError('registerError', 'Email already registered!');
+        return;
+    }
+    
     // Create new user
     const newUser = {
         id: Date.now(),
-        username: username,
-        email: email,
-        phone: phone,
-        password: password,
+        username,
+        email,
+        phone,
+        password,
         balance: 0,
-        status: 'active', // active, banned
-        createdAt: new Date().toISOString(),
-        lastLogin: null
+        status: 'active',
+        createdAt: new Date().toISOString()
     };
-
+    
     users.push(newUser);
-    localStorage.setItem('ravan365_users', JSON.stringify(users));
-
-    // Send registration details to admin (stored in localStorage)
-    const pendingRegistrations = JSON.parse(localStorage.getItem('ravan365_pending_registrations') || '[]');
-    pendingRegistrations.push({
-        ...newUser,
-        registeredAt: new Date().toISOString()
-    });
-    localStorage.setItem('ravan365_pending_registrations', JSON.stringify(pendingRegistrations));
-
-    // Auto-send registration details to admin panel
-    sendRegistrationToAdmin(newUser);
-
-    showNotification('Registration successful! Your details have been sent to admin.', 'success');
-
-    // Clear form and switch to login
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    // Also add to registrations for admin approval
+    const registrations = JSON.parse(localStorage.getItem('registrations') || '[]');
+    registrations.push(newUser);
+    localStorage.setItem('registrations', JSON.stringify(registrations));
+    
+    alert('Registration successful! Please login.');
+    switchTab('login');
+    
+    // Clear form
     document.getElementById('registerForm').reset();
+}
+
+// Show error message
+function showError(elementId, message) {
+    const errorElement = document.getElementById(elementId);
+    errorElement.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+    errorElement.style.display = 'block';
+    
     setTimeout(() => {
-        switchTab('login');
-        document.getElementById('loginUsername').value = username;
-        document.getElementById('loginPassword').value = password;
-    }, 2000);
+        errorElement.style.display = 'none';
+    }, 3000);
 }
 
-// Send registration details to admin panel
-function sendRegistrationToAdmin(user) {
-    // Store in admin notifications
-    const adminNotifications = JSON.parse(localStorage.getItem('ravan365_admin_notifications') || '[]');
-    adminNotifications.unshift({
-        id: Date.now(),
-        type: 'registration',
-        message: `New user registration: ${user.username}`,
-        user: user,
-        timestamp: new Date().toISOString(),
-        read: false
-    });
-    localStorage.setItem('ravan365_admin_notifications', JSON.stringify(adminNotifications));
-
-    console.log('Registration sent to admin:', user);
-}
-
-// GET NEW ID via WhatsApp
-function getNewIdViaWhatsApp() {
-    const message = encodeURIComponent('Hello! I want to get a new gaming ID on Ravan365. Please help me create an account.');
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
-}
-
-// Show Forgot Password
+// Show forgot password
 function showForgotPassword() {
-    showNotification('Please contact admin on WhatsApp to reset your password.', 'info');
-    setTimeout(() => {
-        getNewIdViaWhatsApp();
-    }, 1500);
+    const email = prompt('Enter your email address:');
+    if (email) {
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const user = users.find(u => u.email === email);
+        
+        if (user) {
+            alert(`Your password is: ${user.password}`);
+        } else {
+            alert('Email not found!');
+        }
+    }
 }
 
-// Check Remember Me
-function checkRememberMe() {
-    if (localStorage.getItem('rememberMe')) {
+// Show admin login
+function showAdminLogin() {
+    const username = prompt('Enter admin username:');
+    const password = prompt('Enter admin password:');
+    
+    if (username === 'admin' && password === 'admin123') {
+        sessionStorage.setItem('admin', 'true');
+        window.location.href = 'admin.html';
+    } else {
+        alert('Invalid admin credentials!');
+    }
+}
+
+// Get new ID via WhatsApp
+function getNewIdViaWhatsApp() {
+    const whatsappNumber = localStorage.getItem('whatsappNumber') || '919876543210';
+    const message = 'Hello, I want to get a new gaming ID for Ravan365 Casino.';
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+}
+
+// Check remembered user
+function checkRememberedUser() {
+    const rememberedUser = localStorage.getItem('rememberedUser');
+    if (rememberedUser) {
         document.getElementById('rememberMe').checked = true;
     }
 }
 
-// Notification System
-function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    createParticles();
+    checkRememberedUser();
     
-    let icon = '';
-    if (type === 'success') icon = '<i class="fas fa-check-circle" style="color: #10b981; font-size: 20px;"></i>';
-    else if (type === 'error') icon = '<i class="fas fa-exclamation-circle" style="color: #ef4444; font-size: 20px;"></i>';
-    else icon = '<i class="fas fa-info-circle" style="color: #00d9ff; font-size: 20px;"></i>';
-
-    notification.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px;">
-            ${icon}
-            <span style="font-size: 14px; font-weight: 500;">${message}</span>
-        </div>
-    `;
-    
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: linear-gradient(160deg, rgba(13, 19, 51, 0.95), rgba(9, 13, 31, 0.95));
-        border: 1px solid ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#00d9ff'};
-        border-radius: 12px;
-        z-index: 10000;
-        animation: slideIn 0.3s ease;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        max-width: 400px;
-    `;
-    
-    document.body.appendChild(notification);
-
-    setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => {
-            if (document.body.contains(notification)) {
-                document.body.removeChild(notification);
-            }
-        }, 300);
-    }, 4000);
-}
-
-// Add slideOut animation
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideOut {
-        from {
-            transform: translateX(0);
-            opacity: 1;
+    // Add Enter key support for login
+    document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            handleLogin(e);
         }
-        to {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(style);
-
-// Initialize admin notifications if not exists
-if (!localStorage.getItem('ravan365_admin_notifications')) {
-    localStorage.setItem('ravan365_admin_notifications', '[]');
-}
-
-// Initialize users array if not exists
-if (!localStorage.getItem('ravan365_users')) {
-    localStorage.setItem('ravan365_users', '[]');
-}
-
-// Initialize pending registrations if not exists
-if (!localStorage.getItem('ravan365_pending_registrations')) {
-    localStorage.setItem('ravan365_pending_registrations', '[]');
-}
+    });
+});
